@@ -1,6 +1,6 @@
-package com.VastaImoveis.CRM.Entity.dto;
+package com.VastaImoveis.CRM.Lead.Entity.dto;
 
-import com.VastaImoveis.CRM.Entity.Domain.StatusLead;
+import com.VastaImoveis.CRM.Lead.Entity.Domain.StatusLead;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 

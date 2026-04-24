@@ -1,14 +1,17 @@
-package com.VastaImoveis.CRM.Service;
+package com.VastaImoveis.CRM.Lead.Service;
 
-import com.VastaImoveis.CRM.Entity.Domain.Lead;
-import com.VastaImoveis.CRM.Entity.dto.LeadRequestDTO;
-import com.VastaImoveis.CRM.Entity.dto.LeadResponseDTO;
-import com.VastaImoveis.CRM.Repository.LeadRepository;
-import com.VastaImoveis.CRM.exception.BusinessException;
-import com.VastaImoveis.CRM.exception.ResourceNotFoundException;
-import com.VastaImoveis.CRM.mapper.LeadMapper;
+import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
+import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
+import com.VastaImoveis.CRM.Lead.exception.BusinessException;
+import com.VastaImoveis.CRM.Lead.exception.ResourceNotFoundException;
+import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
+import org.hibernate.tool.schema.spi.CommandAcceptanceException;
+import org.hibernate.tool.schema.spi.ExceptionHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -32,7 +35,8 @@ public class LeadService {
         Lead saved = repository.save(lead);
 
         return LeadMapper.toDTO(saved);
-    }
+
+        }
 
     // 📄 Listar com paginação
     public Page<LeadResponseDTO> findAll(Pageable pageable) {

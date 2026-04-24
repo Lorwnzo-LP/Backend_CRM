@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.exception;
+package com.VastaImoveis.CRM.Lead.exception;
 
 
 import org.springframework.http.HttpStatus;

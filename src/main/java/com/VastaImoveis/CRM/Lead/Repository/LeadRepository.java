@@ -1,6 +1,6 @@
-package com.VastaImoveis.CRM.Repository;
+package com.VastaImoveis.CRM.Lead.Repository;
 
-import com.VastaImoveis.CRM.Entity.Domain.Lead;
+import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,8 +1,8 @@
-package com.VastaImoveis.CRM.mapper;
+package com.VastaImoveis.CRM.Lead.mapper;
 
-import com.VastaImoveis.CRM.Entity.Domain.Lead;
-import com.VastaImoveis.CRM.Entity.dto.LeadRequestDTO;
-import com.VastaImoveis.CRM.Entity.dto.LeadResponseDTO;
+import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
 
 public class LeadMapper {
 

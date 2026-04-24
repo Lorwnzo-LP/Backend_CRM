@@ -1,8 +1,8 @@
-package com.VastaImoveis.CRM.Controller;
+package com.VastaImoveis.CRM.Lead.Controller;
 
-import com.VastaImoveis.CRM.Entity.dto.LeadRequestDTO;
-import com.VastaImoveis.CRM.Entity.dto.LeadResponseDTO;
-import com.VastaImoveis.CRM.Service.LeadService;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
+import com.VastaImoveis.CRM.Lead.Service.LeadService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +25,9 @@ public class LeadController {
     @PostMapping
     public ResponseEntity<LeadResponseDTO> create(
             @RequestBody @Valid LeadRequestDTO dto) {
-
+    if(dto.getEmail() == ""){
+        //todo response Status dinamic
+    }
         LeadResponseDTO created = service.create(dto);
         return ResponseEntity.ok(created);
     }

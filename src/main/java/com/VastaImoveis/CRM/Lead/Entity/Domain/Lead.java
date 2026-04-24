@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.Entity.Domain;
+package com.VastaImoveis.CRM.Lead.Entity.Domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
