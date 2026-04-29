@@ -1,5 +1,6 @@
 package com.VastaImoveis.CRM.Lead.Entity.Domain;
 
+import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -34,6 +35,10 @@ public class Lead {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     // 🔥 Construtor padrão (obrigatório pro JPA)
     public Lead() {}
 
@@ -41,7 +46,7 @@ public class Lead {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.status = (this.status == null) ? StatusLead.NOVO : this.status;
+        this.status = (this.status == null) ? StatusLead.Cadastrado : this.status;
     }
 
     // 🔥 Hook automático antes de atualizar

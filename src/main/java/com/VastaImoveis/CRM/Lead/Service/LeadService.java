@@ -7,11 +7,10 @@ import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
 import com.VastaImoveis.CRM.Lead.exception.BusinessException;
 import com.VastaImoveis.CRM.Lead.exception.ResourceNotFoundException;
 import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
-import org.hibernate.tool.schema.spi.CommandAcceptanceException;
-import org.hibernate.tool.schema.spi.ExceptionHandler;
+import com.VastaImoveis.CRM.Lead.utils.SecurityUtils;
+import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -28,19 +27,20 @@ public class LeadService {
     // 🔥 Criar Lead
     public LeadResponseDTO create(LeadRequestDTO dto) {
         if (repository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado");
         }
-
+        User user = SecurityUtils.getCurrentUser();
         Lead lead = LeadMapper.toEntity(dto);
         Lead saved = repository.save(lead);
 
         return LeadMapper.toDTO(saved);
 
-        }
+    }
 
-    // 📄 Listar com paginação
+    // 📄 Listar com paginação por usuário
     public Page<LeadResponseDTO> findAll(Pageable pageable) {
-        return repository.findAll(pageable)
+        User user = SecurityUtils.getCurrentUser();
+        return repository.findByUser(user, pageable)
                 .map(LeadMapper::toDTO);
     }
 
@@ -51,6 +51,7 @@ public class LeadService {
 
         return LeadMapper.toDTO(lead);
     }
+
 
     // ✏️ Atualizar
     public LeadResponseDTO update(UUID id, LeadRequestDTO dto) {

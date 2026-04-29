@@ -25,9 +25,6 @@ public class LeadController {
     @PostMapping
     public ResponseEntity<LeadResponseDTO> create(
             @RequestBody @Valid LeadRequestDTO dto) {
-    if(dto.getEmail() == ""){
-        //todo response Status dinamic
-    }
         LeadResponseDTO created = service.create(dto);
         return ResponseEntity.ok(created);
     }
