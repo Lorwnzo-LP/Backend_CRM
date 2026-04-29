@@ -31,6 +31,7 @@ public class LeadService {
         }
         User user = SecurityUtils.getCurrentUser();
         Lead lead = LeadMapper.toEntity(dto);
+        lead.setUser(user);
         Lead saved = repository.save(lead);
 
         return LeadMapper.toDTO(saved);

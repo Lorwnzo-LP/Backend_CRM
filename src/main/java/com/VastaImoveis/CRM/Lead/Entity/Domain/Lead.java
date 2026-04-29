@@ -26,9 +26,6 @@ public class Lead {
     @Column(nullable = false)
     private StatusLead status;
 
-    @Column(columnDefinition = "TEXT")
-    private String observacoes;
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -47,6 +44,14 @@ public class Lead {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.status = (this.status == null) ? StatusLead.Cadastrado : this.status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     // 🔥 Hook automático antes de atualizar
@@ -91,14 +96,6 @@ public class Lead {
 
     public void setStatus(StatusLead status) {
         this.status = status;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
     }
 
     public LocalDateTime getCreatedAt() {

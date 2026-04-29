@@ -7,24 +7,22 @@ import java.util.UUID;
 
 public class LeadResponseDTO {
 
-    private UUID id;
-    private String nome;
-    private String telefone;
-    private String email;
-    private StatusLead status;
-    private String observacoes;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final UUID id;
+    private final String nome;
+    private final String telefone;
+    private final String email;
+    private final StatusLead status;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public LeadResponseDTO(UUID id, String nome, String telefone, String email,
-                           StatusLead status, String observacoes,
+                           StatusLead status,
                            LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;
         this.status = status;
-        this.observacoes = observacoes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -49,10 +47,6 @@ public class LeadResponseDTO {
 
     public StatusLead getStatus() {
         return status;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
     }
 
     public LocalDateTime getCreatedAt() {

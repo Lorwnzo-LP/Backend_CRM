@@ -12,7 +12,6 @@ public class LeadMapper {
         lead.setTelefone(dto.getTelefone());
         lead.setEmail(dto.getEmail());
         lead.setStatus(dto.getStatus());
-        lead.setObservacoes(dto.getObservacoes());
         return lead;
     }
 
@@ -23,7 +22,6 @@ public class LeadMapper {
                 lead.getTelefone(),
                 lead.getEmail(),
                 lead.getStatus(),
-                lead.getObservacoes(),
                 lead.getCreatedAt(),
                 lead.getUpdatedAt()
         );
@@ -34,6 +32,5 @@ public class LeadMapper {
         lead.setTelefone(dto.getTelefone());
         lead.setEmail(dto.getEmail());
         lead.setStatus(dto.getStatus());
-        lead.setObservacoes(dto.getObservacoes());
     }
 }

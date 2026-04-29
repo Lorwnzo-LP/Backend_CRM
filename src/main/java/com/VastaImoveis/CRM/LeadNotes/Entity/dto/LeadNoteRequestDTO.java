@@ -1,0 +1,45 @@
+package com.VastaImoveis.CRM.LeadNotes.Entity.dto;
+
+import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
+import jakarta.validation.constraints.NotBlank;
+
+import java.util.UUID;
+
+public class LeadNoteRequestDTO {
+    private UUID id;
+
+    @NotBlank
+    private String note;
+
+    private UUID leadId;
+
+    // Getters & Setters
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setLeadId(UUID leadId) {
+        this.leadId = leadId;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getLeadId() {
+        return leadId;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public UUID getLead() {
+        return leadId;
+    }
+
+    public void setLeadByEntity(Lead lead) {
+        this.leadId = lead.getId();
+    }
+}
