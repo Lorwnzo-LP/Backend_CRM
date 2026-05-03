@@ -1,7 +1,7 @@
-package com.VastaImoveis.CRM.Users.Service;
+package com.VastaImoveis.CRM.Auth;
 
-import com.VastaImoveis.CRM.Lead.exception.BusinessException;
-import com.VastaImoveis.CRM.Users.Auth.JwtService;
+import com.VastaImoveis.CRM.Exception.BusinessException;
+import com.VastaImoveis.CRM.Auth.Jwt.JwtService;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;

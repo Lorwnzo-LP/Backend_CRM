@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.Lead.exception;
+package com.VastaImoveis.CRM.Exception;
 
 public class BusinessException extends RuntimeException {
 

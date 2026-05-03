@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.Users.Auth;
+package com.VastaImoveis.CRM.Auth.Jwt;
 
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Repository.UserRepository;

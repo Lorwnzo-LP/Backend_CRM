@@ -1,8 +1,7 @@
-package com.VastaImoveis.CRM.Users.Controller;
+package com.VastaImoveis.CRM.Auth;
 
-import com.VastaImoveis.CRM.Users.Auth.AuthRequestDTO;
-import com.VastaImoveis.CRM.Users.Auth.AuthResponseDTO;
-import com.VastaImoveis.CRM.Users.Service.AuthService;
+import com.VastaImoveis.CRM.Auth.dto.AuthRequestDTO;
+import com.VastaImoveis.CRM.Auth.dto.AuthResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

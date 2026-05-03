@@ -2,7 +2,6 @@ package com.VastaImoveis.CRM.LeadNotes.service;
 
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
-import com.VastaImoveis.CRM.Lead.exception.ResourceNotFoundException;
 import com.VastaImoveis.CRM.LeadNotes.Entity.domain.LeadNote;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteRequestDTO;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteResponseDTO;

@@ -1,6 +1,6 @@
 package com.VastaImoveis.CRM.config;
 
-import com.VastaImoveis.CRM.Users.Auth.JwtFilter;
+import com.VastaImoveis.CRM.Auth.Jwt.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

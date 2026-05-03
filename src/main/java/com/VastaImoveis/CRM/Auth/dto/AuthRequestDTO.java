@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.Users.Auth;
+package com.VastaImoveis.CRM.Auth.dto;
 
 public class AuthRequestDTO {
     private String email;

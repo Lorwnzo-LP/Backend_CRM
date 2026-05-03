@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.Lead.exception;
+package com.VastaImoveis.CRM.Exception;
 
 import java.time.LocalDateTime;
 
