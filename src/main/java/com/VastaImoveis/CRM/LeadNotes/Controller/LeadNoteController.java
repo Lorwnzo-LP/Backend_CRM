@@ -2,7 +2,6 @@ package com.VastaImoveis.CRM.LeadNotes.Controller;
 
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteRequestDTO;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteResponseDTO;
-import com.VastaImoveis.CRM.LeadNotes.mapper.LeadNoteMapper;
 import com.VastaImoveis.CRM.LeadNotes.service.LeadNoteService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -28,12 +27,12 @@ public class LeadNoteController {
             return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{leadId}")
     public ResponseEntity<Page<LeadNoteResponseDTO>> findByLeadId(
-        @PathVariable UUID userId,
+        @PathVariable UUID leadId,
         Pageable pageable
     ){
-        Page<LeadNoteResponseDTO> page = service.findByLeadId(userId, pageable);
+        Page<LeadNoteResponseDTO> page = service.findByLeadId(leadId, pageable);
         return ResponseEntity.ok(page);
     }
 

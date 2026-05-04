@@ -31,7 +31,8 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidCredentialsException();
         }
-
+        System.out.println(user.getNome());
+        System.out.println(user.getRole());
         return jwtService.generateToken(user);
 
 

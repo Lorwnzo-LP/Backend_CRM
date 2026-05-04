@@ -22,6 +22,7 @@ public class AuthController {
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO dto) {
         String email = dto.getEmail().toLowerCase().trim();
         String token = service.login(email, dto.getPassword());
+        System.out.println();
         return ResponseEntity.ok(new AuthResponseDTO(token));
     }
 }

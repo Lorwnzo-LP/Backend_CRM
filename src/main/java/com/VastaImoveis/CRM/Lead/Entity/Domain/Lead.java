@@ -1,8 +1,10 @@
 package com.VastaImoveis.CRM.Lead.Entity.Domain;
 
+import com.VastaImoveis.CRM.LeadNotes.Entity.domain.LeadNote;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +37,21 @@ public class Lead {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "lead", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LeadNote> notes;
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<LeadNote> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<LeadNote> notes) {
+        this.notes = notes;
+    }
 
     // 🔥 Construtor padrão (obrigatório pro JPA)
     public Lead() {}

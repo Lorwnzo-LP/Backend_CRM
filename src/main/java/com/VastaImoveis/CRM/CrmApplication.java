@@ -19,6 +19,8 @@ public class CrmApplication {
 
     @Bean
     CommandLineRunner init(UserRepository repo, PasswordEncoder encoder) {
+        repo.deleteAll();
+
         return args -> {
             if (repo.count() == 0) {
                 User user = new User();
@@ -27,7 +29,8 @@ public class CrmApplication {
                 user.setPassword(encoder.encode("123456"));
                 user.setRole(RoleUsers.GERENTE);
                 user.setRegiao(RegiaoUsers.CURITIBA);
-
+                System.out.println(user.getNome());
+                System.out.println(user.getRole());
                 repo.save(user);
             }
         };
