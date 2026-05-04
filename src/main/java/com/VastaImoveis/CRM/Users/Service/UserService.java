@@ -1,6 +1,7 @@
 package com.VastaImoveis.CRM.Users.Service;
 
 import com.VastaImoveis.CRM.Exception.BusinessException;
+import com.VastaImoveis.CRM.Exception.ResourceNotFoundException;
 import com.VastaImoveis.CRM.Users.Entity.Domain.RoleUsers;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserRequestDTO;

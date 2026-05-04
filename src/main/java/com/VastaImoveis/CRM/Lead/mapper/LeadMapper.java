@@ -18,6 +18,7 @@ public class LeadMapper {
     public static LeadResponseDTO toDTO(Lead lead) {
         return new LeadResponseDTO(
                 lead.getId(),
+                lead.getUser().getId(),
                 lead.getNome(),
                 lead.getTelefone(),
                 lead.getEmail(),

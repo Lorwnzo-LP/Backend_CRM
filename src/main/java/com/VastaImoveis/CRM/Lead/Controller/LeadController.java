@@ -44,6 +44,14 @@ public class LeadController {
         );
     }
 
+    @GetMapping("/{userId}")
+    @PreAuthorize("hasAnyRole('GERENTE')")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable){
+        return ResponseEntity.ok(
+                new ApiResponse<>(service.findAllByUser(userId, pageable), "Leads listados com sucesso")
+        );
+    }
+
     // Buscar em dashboard
     @GetMapping("/dashboard")
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")

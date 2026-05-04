@@ -8,6 +8,7 @@ import java.util.UUID;
 public class LeadResponseDTO {
 
     private final UUID id;
+    private final UUID userId;
     private final String nome;
     private final String telefone;
     private final String email;
@@ -15,10 +16,15 @@ public class LeadResponseDTO {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public LeadResponseDTO(UUID id, String nome, String telefone, String email,
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public LeadResponseDTO(UUID id, UUID userId, String nome, String telefone, String email,
                            StatusLead status,
                            LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
+        this.userId = userId;
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;

@@ -18,17 +18,22 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 
     Page<Lead> findByUser(User user, Pageable pageable);
 
+    Page<Lead> findByUserId(UUID userId, Pageable pageable);
+
     Page<Lead> findByUserIn(List<User> users, Pageable pageable);
 
     boolean existsByEmail(String email);
 
     @Query("""
-                 SELECT new com.VastaImoveis.CRM.Lead.dto.StatusCount(l.status, COUNT(l))
+
+                 SELECT new com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount(l.status, COUNT(l))
                 FROM Lead l
                 WHERE (:user IS NULL OR l.user = :user)
                 GROUP BY l.status
             """)
     List<StatusCount> countByStatus(User user);
+
+
 
     /*
     Leads por periodo:

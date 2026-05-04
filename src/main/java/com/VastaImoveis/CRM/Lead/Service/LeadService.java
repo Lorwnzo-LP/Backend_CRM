@@ -38,6 +38,8 @@ public class LeadService {
         Lead lead = LeadMapper.toEntity(dto);
         lead.setUser(user);
         Lead saved = repository.save(lead);
+        System.out.println(user);
+        System.out.println(user.getId());
         return LeadMapper.toDTO(saved);
 
 
@@ -56,6 +58,15 @@ public class LeadService {
         return repository.findByUser(user, pageable)
                 .map(LeadMapper::toDTO);
 
+    }
+
+    // Listar filtrado por usuário (gerente only)
+    public Page<LeadResponseDTO> findAllByUser(UUID userId, Pageable pageable){
+        User user = SecurityUtils.getCurrentUser();
+        if(!user.getRole().name().equals("Gerente")){
+            throw new BusinessException("Você não tem permissão para essa chamada");
+        }
+        return repository.findByUserId(userId, pageable).map(LeadMapper::toDTO);
     }
 
     // 🔍 Buscar por ID

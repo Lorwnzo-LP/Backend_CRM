@@ -4,6 +4,8 @@ import com.VastaImoveis.CRM.Lead.Entity.Domain.StatusLead;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 public class LeadRequestDTO {
 
     @NotBlank(message = "Nome é obrigatório")
