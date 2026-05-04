@@ -1,10 +1,12 @@
 package com.VastaImoveis.CRM.Lead.Service;
 
+import com.VastaImoveis.CRM.Exception.BusinessException;
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadDashboardDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
+import com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
-import com.VastaImoveis.CRM.Exception.BusinessException;
 import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
 import com.VastaImoveis.CRM.Lead.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
@@ -12,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,70 +33,104 @@ public class LeadService {
         if (repository.existsByEmail(dto.getEmail())) {
             throw new BusinessException("Email já cadastrado");
         }
-        try {
-            User user = SecurityUtils.getCurrentUser();
-            Lead lead = LeadMapper.toEntity(dto);
-            lead.setUser(user);
-            Lead saved = repository.save(lead);
-            return LeadMapper.toDTO(saved);
-        } catch (Exception e) {
-            throw new BusinessException("Erro ao salvar o Lead");
-        }
+
+        User user = SecurityUtils.getCurrentUser();
+        Lead lead = LeadMapper.toEntity(dto);
+        lead.setUser(user);
+        Lead saved = repository.save(lead);
+        return LeadMapper.toDTO(saved);
 
 
     }
 
     // 📄 Listar com paginação por usuário
     public Page<LeadResponseDTO> findAll(Pageable pageable) {
-        try {
-            User user = SecurityUtils.getCurrentUser();
-            return repository.findByUser(user, pageable)
+
+        User user = SecurityUtils.getCurrentUser();
+
+        if (user.getRole().name().equals("GERENTE")) {
+            return repository.findAll(pageable)
                     .map(LeadMapper::toDTO);
-        } catch (Exception e) {
-            throw new BusinessException("Error ao buscar os Leads");
         }
+
+        return repository.findByUser(user, pageable)
+                .map(LeadMapper::toDTO);
+
     }
 
     // 🔍 Buscar por ID
     public LeadResponseDTO findById(UUID id) {
+        User user = SecurityUtils.getCurrentUser();
         Lead lead = repository.findById(id)
                 .orElseThrow(() -> new BusinessException("Lead não encontrado"));
-        try {
-            return LeadMapper.toDTO(lead);
-        } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+        if (user.getRole().name().equals("CORRETOR") &&
+                !lead.getUser().getId().equals(user.getId())) {
+            throw new BusinessException("Você não pode acessar este lead");
         }
+
+        return LeadMapper.toDTO(lead);
+
     }
 
 
     // ✏️ Atualizar
     public LeadResponseDTO update(UUID id, LeadRequestDTO dto) {
+        User user = SecurityUtils.getCurrentUser();
+
         Lead lead = repository.findById(id)
                 .orElseThrow(() -> new BusinessException("Lead não encontrado"));
+
+        if (user.getRole().name().equals("CORRETOR") &&
+                !lead.getUser().getId().equals(user.getId())) {
+            throw new BusinessException("Você não pode editar este Lead");
+        }
+
         // 🔥 Regra: evitar duplicidade de email
         if (!lead.getEmail().equals(dto.getEmail()) &&
                 repository.existsByEmail(dto.getEmail())) {
             throw new BusinessException("Email já cadastrado");
         }
 
-        try {
-            LeadMapper.updateEntity(lead, dto);
-            Lead updated = repository.save(lead);
 
-            return LeadMapper.toDTO(updated);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        LeadMapper.updateEntity(lead, dto);
+        Lead updated = repository.save(lead);
+
+        return LeadMapper.toDTO(updated);
+
     }
 
     // ❌ Deletar
     public void delete(UUID id) {
+        User user = SecurityUtils.getCurrentUser();
+
+        if (!user.getRole().name().equals("GERENTE")) {
+            throw new BusinessException("Apenas gerentes podem deletar leads");
+        }
+
         Lead lead = repository.findById(id)
                 .orElseThrow(() -> new BusinessException("Lead não encontrado"));
-        try {
-            repository.delete(lead);
-        } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+
+
+        repository.delete(lead);
+    }
+
+    public LeadDashboardDTO getDashboard() {
+
+        User user = SecurityUtils.getCurrentUser();
+
+        boolean isGerente = user.getRole().name().equals("GERENTE");
+
+        // 👇 null = todos os leads
+        List<StatusCount> result = repository.countByStatus(isGerente ? null : user);
+
+        Map<String, Long> porStatus = new HashMap<>();
+        long total = 0;
+
+        for (StatusCount row : result) {
+            porStatus.put(row.getStatus().name(), row.getCount());
+            total += row.getCount();
         }
+
+        return new LeadDashboardDTO(total, porStatus);
     }
 }

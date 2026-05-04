@@ -1,7 +1,8 @@
 package com.VastaImoveis.CRM.Auth;
 
-import com.VastaImoveis.CRM.Exception.BusinessException;
 import com.VastaImoveis.CRM.Auth.Jwt.JwtService;
+import com.VastaImoveis.CRM.Exception.BusinessException;
+import com.VastaImoveis.CRM.Exception.InvalidCredentialsException;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,21 +24,16 @@ public class AuthService {
     }
 
     public String login(String email, String password) {
-        try {
-            System.out.println("Tentando login com: " + email);
 
-            User user = repository.findByEmail(email)
-                    .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+        User user = repository.findByEmail(email)
+                .orElseThrow(InvalidCredentialsException::new);
 
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new BusinessException("Senha inválida");
-            }
-
-            return jwtService.generateToken(user);
-
-        } catch (Exception e) {
-            e.printStackTrace(); // 👈 ISSO AQUI É ESSENCIAL AGORA
-            throw e;
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidCredentialsException();
         }
+
+        return jwtService.generateToken(user);
+
+
     }
 }

@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.config;
+package com.VastaImoveis.CRM.Auth.config;
 
 import com.VastaImoveis.CRM.Auth.Jwt.JwtFilter;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +31,20 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users").permitAll()
-                        .requestMatchers("/leads").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+
+                        // 🔐 ADMIN
+                        .requestMatchers("/admin/**").hasRole("GERENTE")
+
+                        // 📊 LEADS
+                        .requestMatchers("/leads/all").hasRole("GERENTE")
+                        .requestMatchers("/leads/**").hasAnyRole("GERENTE", "CORRETOR")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

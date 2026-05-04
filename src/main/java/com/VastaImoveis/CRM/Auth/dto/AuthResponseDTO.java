@@ -1,13 +1,13 @@
 package com.VastaImoveis.CRM.Auth.dto;
 
 public class AuthResponseDTO {
-    private String Token;
+    private String token;
 
     public AuthResponseDTO(String token) {
-        this.Token = token;
+        this.token = token;
     }
 
     public String getToken() {
-        return Token;
+        return token;
     }
 }

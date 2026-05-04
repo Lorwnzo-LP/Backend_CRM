@@ -13,7 +13,7 @@ public class JwtService {
 
     private final String SECRET = "sua-chave-super-secreta-muito-grande-123456789";
 
-    private Key getSignKey(){
+    private Key getSignKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
@@ -28,8 +28,9 @@ public class JwtService {
     }
 
     public String extractEmail(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -38,9 +39,20 @@ public class JwtService {
     public boolean isTokenValid(String token, User user) {
         try {
             String email = extractEmail(token);
-            return email.equals(user.getEmail());
+            return email.equals(user.getEmail()) && !isTokenExpired(token);
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+
+        return expiration.before(new Date());
     }
 }
