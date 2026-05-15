@@ -9,13 +9,15 @@ public class ErrorResponse {
     private String error;
     private String message;
     private Object details;
+    private String path;
 
-    public ErrorResponse(int status, String error, String message, Object details) {
+    public ErrorResponse(int status, String error, String message, Object details, String path) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.error = error;
         this.message = message;
         this.details = details;
+        this.path = path;
     }
 
     public LocalDateTime getTimestamp() {

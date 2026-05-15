@@ -1,5 +1,6 @@
 package com.VastaImoveis.CRM.Users.Controller;
 
+import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import com.VastaImoveis.CRM.Users.Entity.Domain.RegiaoUsers;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserRequestDTO;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserResponseDTO;
@@ -26,27 +27,28 @@ public class UserController {
     @Operation(summary = "Criar usuário")
     @PreAuthorize("hasAnyRole('GERENTE')")
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserRequestDTO dto) {
-        return ResponseEntity.ok(service.create(dto));
+    public ResponseEntity<ApiResponse<UserResponseDTO>> create(@RequestBody @Valid UserRequestDTO dto) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, service.create(dto), "User criado com sucesso"));
     }
 
     @PreAuthorize("hasAnyRole('GERENTE')")
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(
+    public ResponseEntity<ApiResponse<UserResponseDTO>> update(
             @PathVariable UUID id,
             @RequestBody @Valid UserRequestDTO dto
     ) {
-        return ResponseEntity.ok(service.update(id, dto));
+        return ResponseEntity.ok(new ApiResponse<>(true, service.update(id, dto), "User listado com sucesso"));
     }
 
     @PreAuthorize("hasAnyRole('GERENTE')")
     @GetMapping("/{Regiao}")
-    public ResponseEntity<Page<UserResponseDTO>> findByRegiao(@PathVariable("Regiao") RegiaoUsers regiaoUsers, Pageable pageable){
-        return ResponseEntity.ok(service.listUserByRegiao(regiaoUsers, pageable));
+    public ResponseEntity<ApiResponse<Page<UserResponseDTO>>> findByRegiao(@PathVariable("Regiao") RegiaoUsers regiaoUsers, Pageable pageable){
+        return ResponseEntity.ok(new ApiResponse<>(true, service.listUserByRegiao(regiaoUsers, pageable),"Users listados por região com sucesso"));
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserResponseDTO>> findAll(Pageable pageable){
-        return ResponseEntity.ok(service.findAll(pageable));
+    public ResponseEntity<ApiResponse<Page<UserResponseDTO>>> findAll(Pageable pageable){
+        return ResponseEntity.ok(new ApiResponse<>(true, service.findAll(pageable), "Users listados com sucesso"));
     }
 }

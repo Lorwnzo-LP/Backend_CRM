@@ -1,13 +1,16 @@
 package com.VastaImoveis.CRM.LeadNotes.service;
 
+import com.VastaImoveis.CRM.Exception.BusinessException;
 import com.VastaImoveis.CRM.Exception.ResourceNotFoundException;
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
+import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.LeadNotes.Entity.domain.LeadNote;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteRequestDTO;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteResponseDTO;
 import com.VastaImoveis.CRM.LeadNotes.mapper.LeadNoteMapper;
 import com.VastaImoveis.CRM.LeadNotes.repository.LeadNoteRepository;
+import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,9 +30,13 @@ public class LeadNoteService {
 
     //Criar anotação
     public LeadNoteResponseDTO create(LeadNoteRequestDTO dto){
-        Lead lead = leadRepository.findById(dto.getLead()).orElseThrow(() -> new ResourceNotFoundException("Lead não encontrado"));
-        LeadNote leadNote = LeadNoteMapper.toEntity(dto);
 
+
+        Lead lead = leadRepository.findById(dto.getLead()).orElseThrow(() -> new ResourceNotFoundException("Lead não encontrado"));
+        if(!SecurityUtils.isGerente() && !lead.getUser().getId().equals(SecurityUtils.getCurrentUser().getId())){
+            throw new BusinessException("Você não tem permissão para adicionar nota neste lead");
+        }
+        LeadNote leadNote = LeadNoteMapper.toEntity(dto);
         leadNote.setLead(lead);
         LeadNote saved = repository.save(leadNote);
 
@@ -55,8 +62,10 @@ public class LeadNoteService {
 
     //Deletar
     public void delete(UUID id){
+        
         LeadNote leadNote = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anotação não encontrada"));
+
         repository.delete(leadNote);
     }
 }

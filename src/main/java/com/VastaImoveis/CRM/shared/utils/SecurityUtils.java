@@ -1,4 +1,4 @@
-package com.VastaImoveis.CRM.Lead.utils;
+package com.VastaImoveis.CRM.shared.utils;
 
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,5 +12,9 @@ public class SecurityUtils {
                         .getContext()
                         .getAuthentication())
                 .getPrincipal();
+    }
+
+    public static boolean isGerente(){
+        return  getCurrentUser().getRole().name().equals("GERENTE");
     }
 }

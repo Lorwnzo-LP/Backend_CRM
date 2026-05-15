@@ -1,8 +1,7 @@
 package com.VastaImoveis.CRM.Users.Service;
 
 import com.VastaImoveis.CRM.Exception.BusinessException;
-import com.VastaImoveis.CRM.Exception.ResourceNotFoundException;
-import com.VastaImoveis.CRM.Lead.utils.SecurityUtils;
+import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.RegiaoUsers;
 import com.VastaImoveis.CRM.Users.Entity.Domain.RoleUsers;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
@@ -33,7 +32,9 @@ public class UserService {
 
     public UserResponseDTO create(UserRequestDTO dto) {
         User userAtual = SecurityUtils.getCurrentUser();
-        if(userAtual.getRole().name().equals("GERENTE")){
+        System.out.println(userAtual.getNome());
+        System.out.println(userAtual.getRole());
+        if(!userAtual.getRole().name().equals("GERENTE")){
             throw new BusinessException("Você não tem permissão para criar um usuário");
         }
 
@@ -53,7 +54,7 @@ public class UserService {
 
     public Page<UserResponseDTO> listUserByRegiao(RegiaoUsers regiaoUsers, Pageable pageable){
         User user = SecurityUtils.getCurrentUser();
-        if(user.getRole().name().equals("GERENTE")){
+        if(!user.getRole().name().equals("GERENTE")){
             throw new BusinessException("Você não tem acesso a essa chamada");
         }
 
@@ -62,11 +63,11 @@ public class UserService {
 
     public UserResponseDTO update(UUID id, UserRequestDTO dto) {
         User userAtual = SecurityUtils.getCurrentUser();
-        if(userAtual.getRole().name().equals("GERENTE")){
+        if(!userAtual.getRole().name().equals("GERENTE")){
             throw new BusinessException("Você não tem acesso a essa chamada");
         }
         User user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
 
         // 🔥 Normalização
         String email = dto.getEmail().toLowerCase().trim();

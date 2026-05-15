@@ -9,7 +9,7 @@ public class UserRequestDTO {
     @NotBlank
     private String nome;
 
-    @Email
+    @Email(message = "Adicione um email válido")
     @NotBlank
     private String email;
 
@@ -17,6 +17,8 @@ public class UserRequestDTO {
     private String password;
 
     private RoleUsers role;
+
+    private RegiaoUsers regiao;
 
     public String getNome() {
         return nome;
@@ -37,6 +39,4 @@ public class UserRequestDTO {
     public RegiaoUsers getRegiao() {
         return regiao;
     }
-
-    private RegiaoUsers regiao;
 }

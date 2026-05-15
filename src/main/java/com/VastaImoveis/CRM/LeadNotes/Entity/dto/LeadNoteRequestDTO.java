@@ -2,15 +2,16 @@ package com.VastaImoveis.CRM.LeadNotes.Entity.dto;
 
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
 public class LeadNoteRequestDTO {
-    private UUID id;
 
     @NotBlank
     private String note;
 
+    @NotNull(message = "LeadId é obrigatório")
     private UUID leadId;
 
     // Getters & Setters
@@ -23,9 +24,6 @@ public class LeadNoteRequestDTO {
         this.leadId = leadId;
     }
 
-    public UUID getId() {
-        return id;
-    }
 
     public UUID getLeadId() {
         return leadId;

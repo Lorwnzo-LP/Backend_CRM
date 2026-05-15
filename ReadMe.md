@@ -2,39 +2,112 @@
 
 POST /auth/login
 
-Body:
-{
-"email": "string",
-"password": "string"
-}
+    Body:
+    {
+        "email": "string",
+        "password": "string"
+    }
+    Response:
+    {
+        "success": "boolean",
+        "token": "string",
+        "message": "string"
+    }
+    
+GET /auth/me
+
+    Response:
+    {
+        "success": "boolean",
+        "data":{
+            "id": "UUID",
+            "nome": String,
+            "email": String,
+            "role": RoleUsers
+            "regiao": RegiaoUsers
+        },
+        "message": "string"
+    }
 
 ---
 
 ## 👤 Users
 
-POST /users
+POST /users (Somente gerente)
+
+    Body:
+    {
+    "name": "string",
+    "telefone":"string",
+    "password": "string",
+    "email": "string",
+    "role": "string" (opcional)
+    "regiao": "string" (opcional)
+    }
+    
+    Response:
+    {
+        "success": "boolean",
+        "data":{
+            "id": "UUID",
+            "name": "string",
+            "telefone":"string",
+            "email": "string",
+        },
+        "message": "string"
+    }
+
+GET /users (Somente gerente)
+
+    response:
+        "success": "boolean",
+        "data": {
+            "id": "UUID",
+            "nome": "string",
+            "email": "string",
+            "telefone": "string",
+            "role": "RoleUsers",
+            "regiao":"RegiaoUsers"
+        }
+        "message": "string"
 
 ---
 
 ## 📊 Leads
 
 GET /leads (autenticado)
+        
 
-    Rotas API até o momento:
-        User:
-            POST /users
-            PUT /users/{id}
-        Leads:
-            POST /leads
-            GET /leads
-            GET /leads/{id}
-            PUT /leads/{id}
-        auth:
-            POST /auth/login
+    response:
+        "success": "boolean",
+        "data":{
+            "id": "UUID",
+            "user_id": "UUID",
+            "nome": "string",
+            "email": "string",
+            "telefone": "string",
+        },
+        "message": "string"
 
+POST /leads
 
-        Forma de usar:
-            - Crie o usuário
-            - Receber token
-            - realizar as ações enviando "Bearer token" no header
-     
+    body:
+        "nome": "string",
+        "telefone": "string",
+        "email": "string"
+
+---
+
+## 📊 LeadNotes
+POST /leadNotes
+    
+    body:
+        "note": "string"
+        "leadId": "UUID",
+
+GET /leadNotes/{id}
+    
+    response:
+        "id": "UUID",
+        
+        

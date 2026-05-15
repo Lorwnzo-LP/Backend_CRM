@@ -4,7 +4,7 @@ import com.VastaImoveis.CRM.Lead.Entity.dto.LeadDashboardDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
 import com.VastaImoveis.CRM.Lead.Service.LeadService;
-import com.VastaImoveis.CRM.Lead.shared.ApiResponse;
+import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +31,7 @@ public class LeadController {
     public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAll(Pageable pageable) {
         Page<LeadResponseDTO> page = service.findAll(pageable);
         return ResponseEntity.ok(
-                new ApiResponse<>(page, "Leads listados com sucesso")
+                new ApiResponse<>(true, page, "Leads listados com sucesso")
         );
     }
 
@@ -40,7 +40,7 @@ public class LeadController {
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
     public ResponseEntity<ApiResponse<LeadResponseDTO>> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(
-                new ApiResponse<>(service.findById(id), "Lead buscado com sucesso")
+                new ApiResponse<>(true, service.findById(id), "Lead buscado com sucesso")
         );
     }
 
@@ -48,7 +48,7 @@ public class LeadController {
     @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable){
         return ResponseEntity.ok(
-                new ApiResponse<>(service.findAllByUser(userId, pageable), "Leads listados com sucesso")
+                new ApiResponse<>(true, service.findAllByUser(userId, pageable), "Leads listados com sucesso")
         );
     }
 
@@ -57,7 +57,7 @@ public class LeadController {
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
     public ResponseEntity<ApiResponse<LeadDashboardDTO>> dashboard() {
         return ResponseEntity.ok(
-                new ApiResponse<>(service.getDashboard(), "Dashboard buscado com sucesso")
+                new ApiResponse<>(true, service.getDashboard(), "Dashboard buscado com sucesso")
         );
     }
 
@@ -68,7 +68,7 @@ public class LeadController {
             @RequestBody @Valid LeadRequestDTO dto) {
         LeadResponseDTO created = service.create(dto);
         return ResponseEntity.ok(
-                new ApiResponse<>(created, "Lead criado com sucesso")
+                new ApiResponse<>(true, created, "Lead criado com sucesso")
         );
     }
 
@@ -80,7 +80,7 @@ public class LeadController {
             @RequestBody @Valid LeadRequestDTO dto) {
 
         return ResponseEntity.ok(
-                new ApiResponse<>(service.update(id, dto), "Lead atualizado com sucesso"));
+                new ApiResponse<>(true, service.update(id, dto), "Lead atualizado com sucesso"));
     }
 
     // ❌ Deletar
@@ -89,7 +89,7 @@ public class LeadController {
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.ok(
-                new ApiResponse<>(null, "Lead deletado com sucesso")
+                new ApiResponse<>(true, null, "Lead deletado com sucesso")
         );
     }
 

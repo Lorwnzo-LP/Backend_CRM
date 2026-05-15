@@ -1,10 +1,11 @@
-package com.VastaImoveis.CRM.Lead.shared;
+package com.VastaImoveis.CRM.shared.utils;
 
 public class ApiResponse<T> {
+    private boolean success;
     private T data;
     private String text;
-
-    public ApiResponse(T data, String text) {
+    public ApiResponse(boolean success,T data, String text) {
+        this.success = success;
         this.data = data;
         this.text = text;
     }
@@ -15,5 +16,9 @@ public class ApiResponse<T> {
 
     public String getText() {
         return text;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 }

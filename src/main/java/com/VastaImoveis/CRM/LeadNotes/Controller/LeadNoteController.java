@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,18 +21,19 @@ public class LeadNoteController {
         this.service = service;
     }
 
+    @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
     @PostMapping
     public ResponseEntity<LeadNoteResponseDTO> create(
-        @RequestBody @Valid LeadNoteRequestDTO dto){
-            LeadNoteResponseDTO created = service.create(dto);
-            return ResponseEntity.ok(created);
+            @RequestBody @Valid LeadNoteRequestDTO dto) {
+        LeadNoteResponseDTO created = service.create(dto);
+        return ResponseEntity.ok(created);
     }
 
     @GetMapping("/{leadId}")
     public ResponseEntity<Page<LeadNoteResponseDTO>> findByLeadId(
-        @PathVariable UUID leadId,
-        Pageable pageable
-    ){
+            @PathVariable UUID leadId,
+            Pageable pageable
+    ) {
         Page<LeadNoteResponseDTO> page = service.findByLeadId(leadId, pageable);
         return ResponseEntity.ok(page);
     }

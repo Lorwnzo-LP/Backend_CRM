@@ -8,7 +8,7 @@ import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
 import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
-import com.VastaImoveis.CRM.Lead.utils.SecurityUtils;
+import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,8 +38,6 @@ public class LeadService {
         Lead lead = LeadMapper.toEntity(dto);
         lead.setUser(user);
         Lead saved = repository.save(lead);
-        System.out.println(user);
-        System.out.println(user.getId());
         return LeadMapper.toDTO(saved);
 
 

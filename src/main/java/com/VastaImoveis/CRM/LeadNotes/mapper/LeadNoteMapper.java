@@ -15,6 +15,7 @@ public class LeadNoteMapper {
     public static LeadNoteResponseDTO toDTO(LeadNote leadNote){
         return new LeadNoteResponseDTO(
                 leadNote.getId(),
+                leadNote.getLead().getId(),
                 leadNote.getNote(),
                 leadNote.getCreatedAt()
         );

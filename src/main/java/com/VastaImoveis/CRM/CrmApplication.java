@@ -19,7 +19,6 @@ public class CrmApplication {
 
     @Bean
     CommandLineRunner init(UserRepository repo, PasswordEncoder encoder) {
-        repo.deleteAll();
 
         return args -> {
             if (repo.count() == 0) {
