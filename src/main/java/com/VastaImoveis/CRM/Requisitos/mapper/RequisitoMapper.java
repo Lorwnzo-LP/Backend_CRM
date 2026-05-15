@@ -22,8 +22,6 @@ public class RequisitoMapper {
 
     public static Requisito toEntity(RequisitoRequestDTO request){
         Requisito requisito = new Requisito();
-        requisito.setCorretorId(request.getCorretor());
-        requisito.setGerenteId(request.getGerente());
         return updateEntity(requisito, request);
     }
 

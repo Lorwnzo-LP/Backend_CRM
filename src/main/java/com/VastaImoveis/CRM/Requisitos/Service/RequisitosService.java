@@ -28,18 +28,16 @@ public class RequisitosService {
 
     public RequisitoResponseDTO create(RequisitoRequestDTO dto) {
         User user = SecurityUtils.getCurrentUser();
+        System.out.println(dto.getCorretor());
+        System.out.println(dto.getGerente());
         User corretor = userRepository.findById(dto.getCorretor())
                 .orElseThrow(() -> new BusinessException("Corretor não existe"));
         User gerente = userRepository.findById(dto.getGerente())
                 .orElseThrow(() -> new BusinessException("Gerente não existe"));
 
-        Requisito requisito = new Requisito();
-        requisito.setTitle(dto.getTitle());
-        requisito.setMessage(dto.getMessage());
-        requisito.setStatus(dto.getStatus());
+        Requisito requisito = RequisitoMapper.toEntity(dto);
         requisito.setCorretorId(corretor);
         requisito.setGerenteId(gerente);
-
 
         return RequisitoMapper.toDTO(repository.save(requisito));
     }
