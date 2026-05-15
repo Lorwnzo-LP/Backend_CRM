@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('GERENTE')")
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponseDTO>> create(@RequestBody @Valid UserRequestDTO dto) {
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                 new ApiResponse<>(true, service.create(dto), "User criado com sucesso"));
     }
 
@@ -38,17 +39,22 @@ public class UserController {
             @PathVariable UUID id,
             @RequestBody @Valid UserRequestDTO dto
     ) {
-        return ResponseEntity.ok(new ApiResponse<>(true, service.update(id, dto), "User listado com sucesso"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                new ApiResponse<>(true, service.update(id, dto), "User listado com sucesso"));
     }
 
     @PreAuthorize("hasAnyRole('GERENTE')")
     @GetMapping("/{Regiao}")
     public ResponseEntity<ApiResponse<Page<UserResponseDTO>>> findByRegiao(@PathVariable("Regiao") RegiaoUsers regiaoUsers, Pageable pageable){
-        return ResponseEntity.ok(new ApiResponse<>(true, service.listUserByRegiao(regiaoUsers, pageable),"Users listados por região com sucesso"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                        new ApiResponse<>(true, service.listUserByRegiao(regiaoUsers, pageable),"Users listados por região com sucesso"));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<Page<UserResponseDTO>>> findAll(Pageable pageable){
-        return ResponseEntity.ok(new ApiResponse<>(true, service.findAll(pageable), "Users listados com sucesso"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                        new ApiResponse<>(true, service.findAll(pageable), "Users listados com sucesso"));
     }
 }

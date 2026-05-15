@@ -3,9 +3,11 @@ package com.VastaImoveis.CRM.LeadNotes.Controller;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteRequestDTO;
 import com.VastaImoveis.CRM.LeadNotes.Entity.dto.LeadNoteResponseDTO;
 import com.VastaImoveis.CRM.LeadNotes.service.LeadNoteService;
+import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +25,25 @@ public class LeadNoteController {
 
     @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
     @PostMapping
-    public ResponseEntity<LeadNoteResponseDTO> create(
+    public ResponseEntity<ApiResponse<LeadNoteResponseDTO>> create(
             @RequestBody @Valid LeadNoteRequestDTO dto) {
         LeadNoteResponseDTO created = service.create(dto);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                    new ApiResponse<>(true, created, "Anotação criada com sucesso")
+        );
     }
 
     @GetMapping("/{leadId}")
-    public ResponseEntity<Page<LeadNoteResponseDTO>> findByLeadId(
+    public ResponseEntity<ApiResponse<Page<LeadNoteResponseDTO>>> findByLeadId(
             @PathVariable UUID leadId,
             Pageable pageable
     ) {
         Page<LeadNoteResponseDTO> page = service.findByLeadId(leadId, pageable);
-        return ResponseEntity.ok(page);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                        new ApiResponse<>(true, page, "Anotações listadas com sucesso")
+                );
     }
 
 

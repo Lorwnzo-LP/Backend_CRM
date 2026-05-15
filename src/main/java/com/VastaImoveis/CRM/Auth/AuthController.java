@@ -7,6 +7,7 @@ import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserResponseDTO;
 import com.VastaImoveis.CRM.Users.mapper.userMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,25 +25,27 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponseDTO>> login(@RequestBody AuthRequestDTO dto) {
         String email = dto.getEmail().toLowerCase().trim();
         String token = service.login(email, dto.getPassword());
-        return ResponseEntity.ok(
-                new ApiResponse<>(
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                    new ApiResponse<>(
                         true,
                         new AuthResponseDTO(token),
                         "Login realizado com sucesso"
-                )
-        );
+                    )
+                );
     }
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserResponseDTO>> me() {
         User user = SecurityUtils.getCurrentUser();
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                    new ApiResponse<>(
                         true,
                         userMapper.toDTO(user),
                         "Usuário autenticado"
-                )
-        );
+                    )
+                );
     }
 }
