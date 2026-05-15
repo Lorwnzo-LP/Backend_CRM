@@ -1,7 +1,5 @@
 package com.VastaImoveis.CRM.LeadNotes.Entity.dto;
 
-import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 

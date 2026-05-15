@@ -100,9 +100,7 @@ public class LeadService {
             throw new BusinessException("Email já cadastrado");
         }
 
-
-        LeadMapper.updateEntity(lead, dto);
-        Lead updated = repository.save(lead);
+        Lead updated = repository.save(LeadMapper.updateEntity(lead, dto));
 
         return LeadMapper.toDTO(updated);
 

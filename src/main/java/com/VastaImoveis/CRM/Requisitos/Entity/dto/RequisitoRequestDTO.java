@@ -4,6 +4,8 @@ import com.VastaImoveis.CRM.Requisitos.Entity.Domain.StatusRequisito;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 public class RequisitoRequestDTO {
 
     @NotBlank(message = "Title é obrigatório")
@@ -14,9 +16,9 @@ public class RequisitoRequestDTO {
 
     private StatusRequisito status;
 
-    private User corretor;
+    private UUID corretor;
 
-    private User gerente;
+    private UUID gerente;
 
     public String getTitle() {
         return title;
@@ -42,19 +44,19 @@ public class RequisitoRequestDTO {
         this.status = status;
     }
 
-    public User getCorretor() {
+    public UUID getCorretor() {
         return corretor;
     }
 
-    public void setCorretor(User corretor) {
+    public void setCorretor(UUID corretor) {
         this.corretor = corretor;
     }
 
-    public User getGerente() {
+    public UUID getGerente() {
         return gerente;
     }
 
-    public void setGerente(User gerente) {
+    public void setGerente(UUID gerente) {
         this.gerente = gerente;
     }
 }

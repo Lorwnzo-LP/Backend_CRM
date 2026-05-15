@@ -10,9 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RequisitosRepository extends JpaRepository<Requisito, UUID> {
-    @Override
-    Optional<Requisito> findById(UUID uuid);
-
     Page<Requisito> findByCorretor(User corretor, Pageable pageable);
 
     Page<Requisito> findByGerente(User gerente, Pageable pageable);

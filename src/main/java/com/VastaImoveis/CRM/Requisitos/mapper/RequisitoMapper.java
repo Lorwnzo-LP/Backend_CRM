@@ -1,6 +1,7 @@
 package com.VastaImoveis.CRM.Requisitos.mapper;
 
 import com.VastaImoveis.CRM.Requisitos.Entity.Domain.Requisito;
+import com.VastaImoveis.CRM.Requisitos.Entity.Domain.StatusRequisito;
 import com.VastaImoveis.CRM.Requisitos.Entity.dto.RequisitoRequestDTO;
 import com.VastaImoveis.CRM.Requisitos.Entity.dto.RequisitoResponseDTO;
 
@@ -23,10 +24,18 @@ public class RequisitoMapper {
         Requisito requisito = new Requisito();
         requisito.setCorretorId(request.getCorretor());
         requisito.setGerenteId(request.getGerente());
-        requisito.setTitle(request.getTitle());
-        requisito.setMessage(request.getMessage());
-        requisito.setStatus(request.getStatus());
+        return updateEntity(requisito, request);
+    }
 
-        return requisito;
+    public static Requisito updateEntity(Requisito request, RequisitoRequestDTO dto){
+        request.setTitle(dto.getTitle());
+        request.setMessage(dto.getMessage());
+        request.setStatus(dto.getStatus());
+        return request;
+    }
+
+    public static Requisito updateEntityStatus(Requisito request, StatusRequisito status){
+        request.setStatus(status);
+        return request;
     }
 }

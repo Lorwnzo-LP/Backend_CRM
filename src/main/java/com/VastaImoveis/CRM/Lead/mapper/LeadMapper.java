@@ -28,10 +28,11 @@ public class LeadMapper {
         );
     }
 
-    public static void updateEntity(Lead lead, LeadRequestDTO dto) {
+    public static Lead updateEntity(Lead lead, LeadRequestDTO dto) {
         lead.setNome(dto.getNome());
         lead.setTelefone(dto.getTelefone());
         lead.setEmail(dto.getEmail());
         lead.setStatus(dto.getStatus());
+        return lead;
     }
 }

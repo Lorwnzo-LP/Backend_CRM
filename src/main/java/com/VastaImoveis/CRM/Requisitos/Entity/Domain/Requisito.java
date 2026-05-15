@@ -28,11 +28,11 @@ public class Requisito {
 
     @ManyToOne
     @JoinColumn(name = "corretor_id")
-    private User corretorId;
+    private User corretor;
 
     @ManyToOne
     @JoinColumn(name = "gerente_id")
-    private User gerenteId;
+    private User gerente;
 
     public Requisito(){}
 
@@ -79,18 +79,18 @@ public class Requisito {
     }
 
     public User getCorretorId() {
-        return corretorId;
+        return corretor;
     }
 
     public void setCorretorId(User corretorId) {
-        this.corretorId = corretorId;
+        this.corretor = corretorId;
     }
 
     public User getGerenteId() {
-        return gerenteId;
+        return gerente;
     }
 
     public void setGerenteId(User gerenteId) {
-        this.gerenteId = gerenteId;
+        this.gerente = gerenteId;
     }
 }
