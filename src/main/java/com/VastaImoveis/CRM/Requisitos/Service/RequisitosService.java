@@ -1,6 +1,7 @@
 package com.VastaImoveis.CRM.Requisitos.Service;
 
 import com.VastaImoveis.CRM.Exception.BusinessException;
+import com.VastaImoveis.CRM.Exception.ResourceNotFoundException;
 import com.VastaImoveis.CRM.Requisitos.Entity.Domain.Requisito;
 import com.VastaImoveis.CRM.Requisitos.Entity.Domain.StatusRequisito;
 import com.VastaImoveis.CRM.Requisitos.Entity.dto.RequisitoRequestDTO;
@@ -31,9 +32,9 @@ public class RequisitosService {
         System.out.println(dto.getCorretor());
         System.out.println(dto.getGerente());
         User corretor = userRepository.findById(dto.getCorretor())
-                .orElseThrow(() -> new BusinessException("Corretor não existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("Corretor não existe"));
         User gerente = userRepository.findById(dto.getGerente())
-                .orElseThrow(() -> new BusinessException("Gerente não existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("Gerente não existe"));
 
         Requisito requisito = RequisitoMapper.toEntity(dto);
         requisito.setCorretorId(corretor);
@@ -56,12 +57,12 @@ public class RequisitosService {
 
     public RequisitoResponseDTO findById(UUID id){
         return RequisitoMapper.toDTO(repository.findById(id)
-                .orElseThrow(() -> new BusinessException("Requisito não encontrado")));
+                .orElseThrow(() -> new ResourceNotFoundException("Requisito não encontrado")));
     }
 
     public Page<RequisitoResponseDTO> findAllByUserId(UUID userId, Pageable pageable){
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
         if(user.getRole().name().equals("GERENTE")){
             return repository.findByGerente(user, pageable)
@@ -75,7 +76,7 @@ public class RequisitosService {
 
     public RequisitoResponseDTO update(UUID id, RequisitoRequestDTO dto){
         Requisito requisito = repository.findById(id)
-                .orElseThrow(() -> new BusinessException("Requisito não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Requisito não encontrado"));
 
         Requisito updated = repository.save(RequisitoMapper.updateEntity(requisito, dto));
         return RequisitoMapper.toDTO(updated);
@@ -84,7 +85,7 @@ public class RequisitosService {
 
     public RequisitoResponseDTO updateStatus(UUID id, StatusRequisito status){
         Requisito requisito = repository.findById(id)
-                .orElseThrow(() -> new BusinessException("Requisito não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Requisito não encontrado"));
 
         Requisito updated = repository.save(RequisitoMapper.updateEntityStatus(requisito, status));
         return RequisitoMapper.toDTO(updated);
@@ -92,7 +93,7 @@ public class RequisitosService {
 
     public void Delete(UUID id){
         Requisito requisito = repository.findById(id)
-                .orElseThrow(() -> new BusinessException("Requisito não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Requisito não encontrado"));
         repository.delete(requisito);
     }
 }

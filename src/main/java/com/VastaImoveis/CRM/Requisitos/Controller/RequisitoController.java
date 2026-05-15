@@ -8,6 +8,7 @@ import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +29,8 @@ public class RequisitoController {
     public ResponseEntity<ApiResponse<Page<RequisitoResponseDTO>>> findAll(Pageable pageable){
         Page<RequisitoResponseDTO> page = service.findAll(pageable);
 
-        if(!page.hasContent()){
-            return ResponseEntity.ok(new ApiResponse<>(false, page, "Nenhum requisito encontrado"));
-        }
-
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
                 new ApiResponse<>(true, page, "Requisitos listados com sucesso")
         );
     }
@@ -42,11 +40,8 @@ public class RequisitoController {
     public ResponseEntity<ApiResponse<RequisitoResponseDTO>> findById(@PathVariable UUID id) {
         RequisitoResponseDTO requisito = service.findById(id);
 
-        if(!requisito.getId().equals(id)){
-            return ResponseEntity.ok(new ApiResponse<>(false, requisito, "Requisito não encontrado"));
-        }
-
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
                 new ApiResponse<>(true, requisito, "Requisito encontrado com sucesso")
         );
     }
@@ -55,10 +50,9 @@ public class RequisitoController {
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<Page<RequisitoResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable){
             Page<RequisitoResponseDTO> page = service.findAllByUserId(userId, pageable);
-            if(!page.hasContent()){
-                return ResponseEntity.ok(new ApiResponse<>(false, page, "Nenhum requisito encontrado"));
-            }
-        return ResponseEntity.ok(
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
                 new ApiResponse<>(true, page, "Requisitos encontrados com sucesso")
         );
     }
@@ -66,23 +60,26 @@ public class RequisitoController {
     @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
     @PostMapping
     public ResponseEntity<ApiResponse<RequisitoResponseDTO>> create(@RequestBody @Valid RequisitoRequestDTO dto){
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, service.create(dto), "Requisito criado com sucesso"));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                    new ApiResponse<>(true, service.create(dto), "Requisito criado com sucesso"));
     }
 
     @PreAuthorize("hasRole('GERENTE')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<RequisitoResponseDTO>> update(@PathVariable UUID id, @RequestBody @Valid RequisitoRequestDTO dto){
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, service.update(id, dto), "Requisito alterado com sucesso")
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                    new ApiResponse<>(true, service.update(id, dto), "Requisito alterado com sucesso")
         );
     }
 
     @PreAuthorize("hasRole('GERENTE')")
     @PutMapping("/status/{id}")
     public ResponseEntity<ApiResponse<RequisitoResponseDTO>> updateStatus(@PathVariable UUID id, @RequestBody @Valid RequisitoRequestDTO status){
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, service.updateStatus(id, status.getStatus()), "Requisito alterado com sucesso")
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                    new ApiResponse<>(true, service.updateStatus(id, status.getStatus()), "Requisito alterado com sucesso")
         );
     }
 
@@ -90,8 +87,9 @@ public class RequisitoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<RequisitoResponseDTO>> Delete(@PathVariable UUID id){
         service.Delete(id);
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, null, "Requisito Deletado com sucesso")
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                    new ApiResponse<>(true, null, "Requisito Deletado com sucesso")
         );
     }
 }
