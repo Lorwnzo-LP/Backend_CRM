@@ -16,6 +16,12 @@ public class UserRequestDTO {
     @NotBlank
     private String password;
 
+    private String telefone;
+
+    public String getTelefone() {
+        return telefone;
+    }
+
     private RoleUsers role;
 
     private RegiaoUsers regiao;

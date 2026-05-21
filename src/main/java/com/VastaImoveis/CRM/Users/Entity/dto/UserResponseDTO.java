@@ -9,8 +9,26 @@ public class UserResponseDTO {
     private UUID id;
     private String nome;
     private String email;
+    private String telefone;
     private RoleUsers role;
     private RegiaoUsers regiao;
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public UserResponseDTO(UUID id, String nome, String email, String telefone, RoleUsers role, RegiaoUsers regiao) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.role = role;
+        this.regiao = regiao;
+    }
 
     public UUID getId() {
         return id;
@@ -49,14 +67,6 @@ public class UserResponseDTO {
     }
 
     public void setRegiao(RegiaoUsers regiao) {
-        this.regiao = regiao;
-    }
-
-    public UserResponseDTO(UUID id, String nome, String email, RoleUsers role, RegiaoUsers regiao) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.role = role;
         this.regiao = regiao;
     }
 }

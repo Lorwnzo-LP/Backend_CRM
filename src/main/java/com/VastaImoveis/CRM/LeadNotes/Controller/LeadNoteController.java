@@ -46,6 +46,15 @@ public class LeadNoteController {
                 );
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteById(
+            @PathVariable UUID id
+    ){
+        service.delete(id);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, null, "Nota deletada com sucesso")
+        );
+    }
 
 }
 

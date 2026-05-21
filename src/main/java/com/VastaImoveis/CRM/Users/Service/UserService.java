@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
 
 import static com.VastaImoveis.CRM.Users.mapper.userMapper.toDTO;
@@ -32,8 +33,6 @@ public class UserService {
 
     public UserResponseDTO create(UserRequestDTO dto) {
         User userAtual = SecurityUtils.getCurrentUser();
-        System.out.println(userAtual.getNome());
-        System.out.println(userAtual.getRole());
         if(!userAtual.getRole().name().equals("GERENTE")){
             throw new BusinessException("Você não tem permissão para criar um usuário");
         }
@@ -43,9 +42,12 @@ public class UserService {
             throw new BusinessException("Email já cadastrado");
         }
 
+        String telefone = dto.getTelefone().toLowerCase().trim();
+
         User user = new User();
         user.setNome(dto.getNome());
         user.setEmail(email);
+        user.setTelefone(telefone);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(dto.getRole() != null ? dto.getRole() : RoleUsers.CORRETOR);
 

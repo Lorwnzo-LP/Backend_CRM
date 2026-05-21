@@ -1,7 +1,7 @@
 package com.VastaImoveis.CRM.Auth;
 
 import com.VastaImoveis.CRM.Auth.Jwt.JwtService;
-import com.VastaImoveis.CRM.Exception.BusinessException;
+import com.VastaImoveis.CRM.Auth.dto.AuthResult;
 import com.VastaImoveis.CRM.Exception.InvalidCredentialsException;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Repository.UserRepository;
@@ -23,7 +23,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public String login(String email, String password) {
+    public AuthResult login(String email, String password) {
 
         User user = repository.findByEmail(email)
                 .orElseThrow(InvalidCredentialsException::new);
@@ -33,7 +33,9 @@ public class AuthService {
         }
         System.out.println(user.getNome());
         System.out.println(user.getRole());
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+
+        return new AuthResult(token, user);
 
 
     }

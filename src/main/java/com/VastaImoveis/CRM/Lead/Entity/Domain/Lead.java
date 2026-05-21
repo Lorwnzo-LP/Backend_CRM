@@ -60,7 +60,7 @@ public class Lead {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.status = (this.status == null) ? StatusLead.Cadastrado : this.status;
+        this.status = (this.status == null) ? StatusLead.CADASTRADO : this.status;
     }
 
     public User getUser() {

@@ -9,6 +9,7 @@ public class userMapper {
                 user.getId(),
                 user.getNome(),
                 user.getEmail(),
+                user.getTelefone(),
                 user.getRole(),
                 user.getRegiao()
         );

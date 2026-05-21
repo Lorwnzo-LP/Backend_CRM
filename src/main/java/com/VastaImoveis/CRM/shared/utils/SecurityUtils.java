@@ -1,6 +1,8 @@
 package com.VastaImoveis.CRM.shared.utils;
 
+
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Objects;
@@ -8,10 +10,16 @@ import java.util.Objects;
 public class SecurityUtils {
 
     public static User getCurrentUser() {
-        return (User) Objects.requireNonNull(SecurityContextHolder
-                        .getContext()
-                        .getAuthentication())
-                .getPrincipal();
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null ||
+                !(authentication.getPrincipal() instanceof User user)) {
+            return null;
+        }
+
+        return user;
     }
 
     public static boolean isGerente(){

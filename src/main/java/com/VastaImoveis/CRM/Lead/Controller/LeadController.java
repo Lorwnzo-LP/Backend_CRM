@@ -31,7 +31,7 @@ public class LeadController {
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
     public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAll(Pageable pageable) {
         Page<LeadResponseDTO> page = service.findAll(pageable);
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                     new ApiResponse<>(true, page, "Leads listados com sucesso")
                 );
@@ -41,16 +41,16 @@ public class LeadController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
     public ResponseEntity<ApiResponse<LeadResponseDTO>> findById(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                     new ApiResponse<>(true, service.findById(id), "Lead buscado com sucesso")
         );
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable){
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                     new ApiResponse<>(true, service.findAllByUser(userId, pageable), "Leads listados com sucesso")
         );
@@ -60,7 +60,7 @@ public class LeadController {
     @GetMapping("/dashboard")
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
     public ResponseEntity<ApiResponse<LeadDashboardDTO>> dashboard() {
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                     new ApiResponse<>(true, service.getDashboard(), "Dashboard buscado com sucesso")
         );
@@ -72,7 +72,7 @@ public class LeadController {
     public ResponseEntity<ApiResponse<LeadResponseDTO>> create(
             @RequestBody @Valid LeadRequestDTO dto) {
         LeadResponseDTO created = service.create(dto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                     new ApiResponse<>(true, created, "Lead criado com sucesso")
         );
@@ -94,7 +94,7 @@ public class LeadController {
     @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
         service.delete(id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
                 new ApiResponse<>(true, null, "Lead deletado com sucesso")
         );
     }

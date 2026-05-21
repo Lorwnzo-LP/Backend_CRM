@@ -2,11 +2,12 @@ package com.VastaImoveis.CRM.Auth;
 
 import com.VastaImoveis.CRM.Auth.dto.AuthRequestDTO;
 import com.VastaImoveis.CRM.Auth.dto.AuthResponseDTO;
-import com.VastaImoveis.CRM.shared.utils.ApiResponse;
-import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
+import com.VastaImoveis.CRM.Auth.dto.AuthResult;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserResponseDTO;
 import com.VastaImoveis.CRM.Users.mapper.userMapper;
+import com.VastaImoveis.CRM.shared.utils.ApiResponse;
+import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +25,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponseDTO>> login(@RequestBody AuthRequestDTO dto) {
         String email = dto.getEmail().toLowerCase().trim();
-        String token = service.login(email, dto.getPassword());
+        AuthResult result = service.login(email, dto.getPassword());
+
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(
-                    new ApiResponse<>(
-                        true,
-                        new AuthResponseDTO(token),
-                        "Login realizado com sucesso"
-                    )
+                        new ApiResponse<>(
+                                true,
+                                new AuthResponseDTO(userMapper.toDTO(result.user()), result.token()),
+                                "Login realizado com sucesso"
+                        )
                 );
     }
 
@@ -41,11 +43,11 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(
-                    new ApiResponse<>(
-                        true,
-                        userMapper.toDTO(user),
-                        "Usuário autenticado"
-                    )
+                        new ApiResponse<>(
+                                true,
+                                userMapper.toDTO(user),
+                                "Usuário autenticado"
+                        )
                 );
     }
 }
