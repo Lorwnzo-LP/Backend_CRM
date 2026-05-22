@@ -30,7 +30,7 @@ public class LeadService {
 
     // 🔥 Criar Lead
     public LeadResponseDTO create(LeadRequestDTO dto) {
-        if (repository.existsByEmail(dto.getEmail())) {
+        if (repository.existsByEmail(dto.getEmail()) && !dto.getEmail().isEmpty()) {
             throw new BusinessException("Email já cadastrado");
         }
 
@@ -44,7 +44,7 @@ public class LeadService {
     }
 
     // 📄 Listar com paginação por usuário
-    public Page<LeadResponseDTO> findAll(Pageable pageable) {
+    public Page<LeadResponseDTO> findAllWithPage(Pageable pageable) {
 
         User user = SecurityUtils.getCurrentUser();
 
@@ -56,6 +56,10 @@ public class LeadService {
         return repository.findByUser(user, pageable)
                 .map(LeadMapper::toDTO);
 
+    }
+
+    public List<LeadResponseDTO> findAllByUserIdList(UUID id){
+        return repository.findByUserId(id).stream().map(LeadMapper::toDTO).toList();
     }
 
     // Listar filtrado por usuário (gerente only)
@@ -121,6 +125,7 @@ public class LeadService {
         repository.delete(lead);
     }
 
+
     public LeadDashboardDTO getDashboard() {
 
         User user = SecurityUtils.getCurrentUser();
@@ -129,6 +134,26 @@ public class LeadService {
 
         // 👇 null = todos os leads
         List<StatusCount> result = repository.countByStatus(isGerente ? null : user);
+
+        Map<String, Long> porStatus = new HashMap<>();
+        long total = 0;
+
+        for (StatusCount row : result) {
+            porStatus.put(row.getStatus().name(), row.getCount());
+            total += row.getCount();
+        }
+
+        return new LeadDashboardDTO(total, porStatus);
+    }
+
+    public LeadDashboardDTO getDashboardByUser(UUID userId) {
+
+        User user = SecurityUtils.getCurrentUser();
+
+        boolean isGerente = user.getRole().name().equals("GERENTE");
+
+        // 👇 null = todos os leads
+        List<StatusCount> result = repository.countByStatusByUser(userId);
 
         Map<String, Long> porStatus = new HashMap<>();
         long total = 0;

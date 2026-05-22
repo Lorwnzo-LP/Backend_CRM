@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,10 +31,20 @@ public class LeadController {
     @GetMapping
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
     public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAll(Pageable pageable) {
-        Page<LeadResponseDTO> page = service.findAll(pageable);
+        Page<LeadResponseDTO> page = service.findAllWithPage(pageable);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
                     new ApiResponse<>(true, page, "Leads listados com sucesso")
+                );
+    }
+
+    @GetMapping("/all/{userId}")
+    @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
+    public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> findAllByUserIdList(@PathVariable UUID userId){
+        List<LeadResponseDTO> leads = service.findAllByUserIdList(userId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(true, leads, "Leads buscados com sucesso")
                 );
     }
 

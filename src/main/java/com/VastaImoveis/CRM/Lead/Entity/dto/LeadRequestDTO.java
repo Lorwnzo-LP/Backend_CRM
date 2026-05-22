@@ -15,7 +15,6 @@ public class LeadRequestDTO {
     private String telefone;
 
     @Email(message = "Email inválido")
-    @NotBlank(message = "Email é obrigatório")
     private String email;
 
     private StatusLead status;

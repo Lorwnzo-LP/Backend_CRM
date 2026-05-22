@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,8 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
     Page<Lead> findByUser(User user, Pageable pageable);
 
     Page<Lead> findByUserId(UUID userId, Pageable pageable);
+
+    List<Lead> findByUserId(UUID userId);
 
     Page<Lead> findByUserIn(List<User> users, Pageable pageable);
 
@@ -33,6 +36,16 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
             """)
     List<StatusCount> countByStatus(User user);
 
+    @Query("""
+    SELECT new com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount(
+        l.status,
+        COUNT(l)
+    )
+    FROM Lead l
+    WHERE (:userId IS NULL OR l.user.id = :userId)
+    GROUP BY l.status
+""")
+    List<StatusCount> countByStatusByUser(@Param("userId") UUID userId);
 
 
     /*

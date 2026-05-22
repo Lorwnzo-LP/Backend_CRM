@@ -22,15 +22,15 @@ public class CrmApplication {
 
         return args -> {
             if (repo.count() == 0) {
-                User user = new User();
-                user.setNome("Admin");
-                user.setEmail("admin@email.com");
-                user.setPassword(encoder.encode("123456"));
-                user.setRole(RoleUsers.GERENTE);
-                user.setRegiao(RegiaoUsers.CURITIBA);
-                System.out.println(user.getNome());
-                System.out.println(user.getRole());
-                repo.save(user);
+                    User user = new User();
+                    user.setNome("Admin");
+                    user.setEmail("admin@email.com");
+                    user.setPassword(encoder.encode("123456"));
+                    user.setRole(RoleUsers.GERENTE);
+                    user.setRegiao(RegiaoUsers.CURITIBA);
+                    System.out.println(user.getNome());
+                    System.out.println(user.getRole());
+                    repo.save(user);
             }
         };
     }

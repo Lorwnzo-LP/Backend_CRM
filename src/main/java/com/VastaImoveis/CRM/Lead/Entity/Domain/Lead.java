@@ -21,7 +21,7 @@ public class Lead {
     @Column(nullable = false)
     private String telefone;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -104,7 +104,7 @@ public class Lead {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = ( email ==null || email.isBlank() ) ? null : email.trim().toLowerCase();
     }
 
     public StatusLead getStatus() {
