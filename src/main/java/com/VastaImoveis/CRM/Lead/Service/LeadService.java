@@ -2,6 +2,7 @@ package com.VastaImoveis.CRM.Lead.Service;
 
 import com.VastaImoveis.CRM.Exception.BusinessException;
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
+import com.VastaImoveis.CRM.Lead.Entity.Domain.StatusLead;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadDashboardDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
@@ -58,6 +59,21 @@ public class LeadService {
 
     }
 
+    public Page<LeadResponseDTO> findByStatus(Pageable pageable, StatusLead status) {
+        User user = SecurityUtils.getCurrentUser();
+
+        if(!user.getRole().name().equals("GERENTE") && status.equals(StatusLead.ENCERRADO)){
+            throw new BusinessException("Você não tem acesso a essa chamada");
+        }
+
+        return repository.findByStatus(status, pageable).map(LeadMapper::toDTO);
+    }
+
+    public Page<LeadResponseDTO> findAllNotEncerrado(Pageable pageable){
+        return repository.findByStatusNot(StatusLead.ENCERRADO, pageable).map(LeadMapper::toDTO);
+    }
+
+
     public List<LeadResponseDTO> findAllByUserIdList(UUID id){
         return repository.findByUserId(id).stream().map(LeadMapper::toDTO).toList();
     }
@@ -107,7 +123,14 @@ public class LeadService {
         Lead updated = repository.save(LeadMapper.updateEntity(lead, dto));
 
         return LeadMapper.toDTO(updated);
+    }
 
+    public LeadResponseDTO patchLeadStatus(UUID id, StatusLead status){
+        Lead lead = repository.findById(id)
+                .orElseThrow(() -> new BusinessException("Lead não encontrado"));
+        lead.setStatus(status);
+        Lead patched = repository.save(lead);
+        return LeadMapper.toDTO(patched);
     }
 
     // ❌ Deletar
@@ -165,4 +188,6 @@ public class LeadService {
 
         return new LeadDashboardDTO(total, porStatus);
     }
+
+
 }
