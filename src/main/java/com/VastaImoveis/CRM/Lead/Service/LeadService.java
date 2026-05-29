@@ -2,14 +2,11 @@ package com.VastaImoveis.CRM.Lead.Service;
 
 import com.VastaImoveis.CRM.Exception.BusinessException;
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
-import com.VastaImoveis.CRM.Lead.Entity.dto.LeadDashboardDTO;
-import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
-import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
-import com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount;
+import com.VastaImoveis.CRM.Lead.Entity.dto.*;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
 import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
-import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
+import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,8 +36,6 @@ public class LeadService {
         lead.setUser(user);
         Lead saved = repository.save(lead);
         return LeadMapper.toDTO(saved);
-
-
     }
 
     // 📄 Listar com paginação por usuário
@@ -58,14 +53,14 @@ public class LeadService {
 
     }
 
-    public List<LeadResponseDTO> findAllByUserIdList(UUID id){
+    public List<LeadResponseDTO> findAllByUserIdList(UUID id) {
         return repository.findByUserId(id).stream().map(LeadMapper::toDTO).toList();
     }
 
     // Listar filtrado por usuário (gerente only)
-    public Page<LeadResponseDTO> findAllByUser(UUID userId, Pageable pageable){
+    public Page<LeadResponseDTO> findAllByUser(UUID userId, Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
-        if(!user.getRole().name().equals("Gerente")){
+        if (!user.getRole().name().equals("Gerente")) {
             throw new BusinessException("Você não tem permissão para essa chamada");
         }
         return repository.findByUserId(userId, pageable).map(LeadMapper::toDTO);
@@ -100,7 +95,8 @@ public class LeadService {
 
         // 🔥 Regra: evitar duplicidade de email
         if (!lead.getEmail().equals(dto.getEmail()) &&
-                repository.existsByEmail(dto.getEmail())) {
+                repository.existsByEmail(dto.getEmail())
+        ) {
             throw new BusinessException("Email já cadastrado");
         }
 
@@ -108,6 +104,19 @@ public class LeadService {
 
         return LeadMapper.toDTO(updated);
 
+    }
+
+    public LeadResponseDTO updateStatus(
+            UUID id,
+            UpdateLeadStatusDTO dto
+    ) {
+        Lead lead = repository.findById(id)
+                .orElseThrow(() -> new BusinessException("Lead não encontrado"));
+
+        lead.setStatus(dto.statusLead());
+        Lead updatedLead = repository.save(lead);
+
+        return LeadMapper.toDTO(updatedLead);
     }
 
     // ❌ Deletar

@@ -3,6 +3,7 @@ package com.VastaImoveis.CRM.Lead.Controller;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadDashboardDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
+import com.VastaImoveis.CRM.Lead.Entity.dto.UpdateLeadStatusDTO;
 import com.VastaImoveis.CRM.Lead.Service.LeadService;
 import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import jakarta.validation.Valid;
@@ -34,13 +35,13 @@ public class LeadController {
         Page<LeadResponseDTO> page = service.findAllWithPage(pageable);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                    new ApiResponse<>(true, page, "Leads listados com sucesso")
+                        new ApiResponse<>(true, page, "Leads listados com sucesso")
                 );
     }
 
     @GetMapping("/all/{userId}")
     @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
-    public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> findAllByUserIdList(@PathVariable UUID userId){
+    public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> findAllByUserIdList(@PathVariable UUID userId) {
         List<LeadResponseDTO> leads = service.findAllByUserIdList(userId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
@@ -54,17 +55,17 @@ public class LeadController {
     public ResponseEntity<ApiResponse<LeadResponseDTO>> findById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                    new ApiResponse<>(true, service.findById(id), "Lead buscado com sucesso")
-        );
+                        new ApiResponse<>(true, service.findById(id), "Lead buscado com sucesso")
+                );
     }
 
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('GERENTE')")
-    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable){
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                    new ApiResponse<>(true, service.findAllByUser(userId, pageable), "Leads listados com sucesso")
-        );
+                        new ApiResponse<>(true, service.findAllByUser(userId, pageable), "Leads listados com sucesso")
+                );
     }
 
     // Buscar em dashboard
@@ -73,8 +74,8 @@ public class LeadController {
     public ResponseEntity<ApiResponse<LeadDashboardDTO>> dashboard() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                    new ApiResponse<>(true, service.getDashboard(), "Dashboard buscado com sucesso")
-        );
+                        new ApiResponse<>(true, service.getDashboard(), "Dashboard buscado com sucesso")
+                );
     }
 
     // 🔥 Criar Lead
@@ -85,8 +86,8 @@ public class LeadController {
         LeadResponseDTO created = service.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
-                    new ApiResponse<>(true, created, "Lead criado com sucesso")
-        );
+                        new ApiResponse<>(true, created, "Lead criado com sucesso")
+                );
     }
 
     // ✏️ Atualizar
@@ -98,6 +99,19 @@ public class LeadController {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                 new ApiResponse<>(true, service.update(id, dto), "Lead atualizado com sucesso"));
+    }
+
+    // Atualizar status
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<LeadResponseDTO>> updateStatus(
+            @PathVariable UUID id,
+            @RequestBody UpdateLeadStatusDTO dto
+    ) {
+        LeadResponseDTO responseDTO = service.updateStatus(id, dto);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                new ApiResponse<>(true, responseDTO, "Status atualizado com sucesso")
+        );
     }
 
     // ❌ Deletar
