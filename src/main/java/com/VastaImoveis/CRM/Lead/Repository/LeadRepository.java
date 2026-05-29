@@ -52,6 +52,19 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 """)
     List<StatusCount> countByStatusByUser(@Param("userId") UUID userId);
 
+    @Query("""
+    SELECT l
+    FROM Lead l
+    WHERE
+        LOWER(l.nome) LIKE LOWER(CONCAT('%', :search, '%'))
+        OR LOWER(l.email) LIKE LOWER(CONCAT('%', :search, '%'))
+        OR l.telefone LIKE CONCAT('%', :search, '%')
+""")
+    Page<Lead> search(
+            @Param("search") String search,
+            Pageable pageable
+    );
+
     /*
     Leads por periodo:
         WHERE (:user IS NULL OR l.user = :user)

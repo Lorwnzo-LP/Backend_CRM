@@ -29,7 +29,6 @@ public class LeadService {
         this.repository = repository;
     }
 
-    // 🔥 Criar Lead
     public LeadResponseDTO create(LeadRequestDTO dto) {
         if (repository.existsByEmail(dto.getEmail()) && !dto.getEmail().isEmpty()) {
             throw new BusinessException("Email já cadastrado");
@@ -44,7 +43,6 @@ public class LeadService {
 
     }
 
-    // 📄 Listar com paginação por usuário
     public Page<LeadResponseDTO> findAllWithPage(Pageable pageable) {
 
         User user = SecurityUtils.getCurrentUser();
@@ -73,12 +71,14 @@ public class LeadService {
         return repository.findByStatusNot(StatusLead.ENCERRADO, pageable).map(LeadMapper::toDTO);
     }
 
+    public Page<LeadResponseDTO> findBySearch(Pageable pageable, String search){
+        return repository.search(search, pageable).map(LeadMapper::toDTO);
+    }
 
     public List<LeadResponseDTO> findAllByUserIdList(UUID id){
         return repository.findByUserId(id).stream().map(LeadMapper::toDTO).toList();
     }
 
-    // Listar filtrado por usuário (gerente only)
     public Page<LeadResponseDTO> findAllByUser(UUID userId, Pageable pageable){
         User user = SecurityUtils.getCurrentUser();
         if(!user.getRole().name().equals("Gerente")){
@@ -87,7 +87,6 @@ public class LeadService {
         return repository.findByUserId(userId, pageable).map(LeadMapper::toDTO);
     }
 
-    // 🔍 Buscar por ID
     public LeadResponseDTO findById(UUID id) {
         User user = SecurityUtils.getCurrentUser();
         Lead lead = repository.findById(id)
@@ -101,8 +100,6 @@ public class LeadService {
 
     }
 
-
-    // ✏️ Atualizar
     public LeadResponseDTO update(UUID id, LeadRequestDTO dto) {
         User user = SecurityUtils.getCurrentUser();
 
@@ -133,7 +130,6 @@ public class LeadService {
         return LeadMapper.toDTO(patched);
     }
 
-    // ❌ Deletar
     public void delete(UUID id) {
         User user = SecurityUtils.getCurrentUser();
 

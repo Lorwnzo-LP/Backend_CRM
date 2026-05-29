@@ -93,6 +93,15 @@ public class LeadController {
         );
     }
 
+    @GetMapping("/search/{search}")
+    @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findBySearch(@PathVariable String search, @PageableDefault(size = 10) Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(true, service.findBySearch(pageable, search), "Leads pesquisados com sucesso")
+                );
+    }
+
     // Buscar em dashboard
     @GetMapping("/dashboard")
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
