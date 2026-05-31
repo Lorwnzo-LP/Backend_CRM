@@ -1,6 +1,7 @@
 package com.VastaImoveis.CRM.Lead.Repository;
 
 import com.VastaImoveis.CRM.Lead.Entity.Domain.Lead;
+import com.VastaImoveis.CRM.Lead.Entity.Domain.StatusLead;
 import com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,10 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 
     boolean existsByEmail(String email);
 
+    Page<Lead> findByStatus(StatusLead statusLead, Pageable pageable);
+
+    Page<Lead> findByStatusNot(StatusLead statusLead, Pageable pageable);
+
     @Query("""
 
                  SELECT new com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount(l.status, COUNT(l))
@@ -47,6 +52,18 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 """)
     List<StatusCount> countByStatusByUser(@Param("userId") UUID userId);
 
+    @Query("""
+    SELECT l
+    FROM Lead l
+    WHERE
+        LOWER(l.nome) LIKE LOWER(CONCAT('%', :search, '%'))
+        OR LOWER(l.email) LIKE LOWER(CONCAT('%', :search, '%'))
+        OR l.telefone LIKE CONCAT('%', :search, '%')
+""")
+    Page<Lead> search(
+            @Param("search") String search,
+            Pageable pageable
+    );
 
     /*
     Leads por periodo:

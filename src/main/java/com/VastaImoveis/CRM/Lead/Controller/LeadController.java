@@ -1,14 +1,16 @@
 package com.VastaImoveis.CRM.Lead.Controller;
 
+import com.VastaImoveis.CRM.Lead.Entity.Domain.StatusLead;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadDashboardDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadRequestDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
-import com.VastaImoveis.CRM.Lead.Entity.dto.UpdateLeadStatusDTO;
+import com.VastaImoveis.CRM.Lead.Entity.dto.LeadStatusDTO;
 import com.VastaImoveis.CRM.Lead.Service.LeadService;
 import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,8 +33,31 @@ public class LeadController {
     // 📄 Listar com paginação
     @GetMapping
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
-    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAll(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAll(@PageableDefault(size = 10) Pageable pageable) {
         Page<LeadResponseDTO> page = service.findAllWithPage(pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                    new ApiResponse<>(true, page, "Leads listados com sucesso")
+                );
+    }
+
+    @GetMapping("/status/{status}")
+    @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByStatus(
+            @PageableDefault(size = 10) Pageable pageable,
+            @PathVariable StatusLead status){
+        LeadStatusDTO dto = new LeadStatusDTO(status);
+        Page<LeadResponseDTO> page = service.findByStatus(pageable, dto.statusLead());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(true, page, "Leads listados com sucesso")
+                );
+    }
+
+    @GetMapping("/status")
+    @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAllNotEncerrado(@PageableDefault(size = 10) Pageable pageable){
+        Page<LeadResponseDTO> page = service.findAllNotEncerrado(pageable);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         new ApiResponse<>(true, page, "Leads listados com sucesso")
@@ -41,7 +66,7 @@ public class LeadController {
 
     @GetMapping("/all/{userId}")
     @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
-    public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> findAllByUserIdList(@PathVariable UUID userId) {
+    public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> findAllByUserIdList(@PathVariable UUID userId){
         List<LeadResponseDTO> leads = service.findAllByUserIdList(userId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
@@ -55,16 +80,25 @@ public class LeadController {
     public ResponseEntity<ApiResponse<LeadResponseDTO>> findById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ApiResponse<>(true, service.findById(id), "Lead buscado com sucesso")
-                );
+                    new ApiResponse<>(true, service.findById(id), "Lead buscado com sucesso")
+        );
     }
 
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('GERENTE')")
-    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findByUserId(@PathVariable UUID userId, @PageableDefault(size = 10) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ApiResponse<>(true, service.findAllByUser(userId, pageable), "Leads listados com sucesso")
+                    new ApiResponse<>(true, service.findAllByUser(userId, pageable), "Leads listados com sucesso")
+        );
+    }
+
+    @GetMapping("/search/{search}")
+    @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findBySearch(@PathVariable String search, @PageableDefault(size = 10) Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(true, service.findBySearch(pageable, search), "Leads pesquisados com sucesso")
                 );
     }
 
@@ -74,8 +108,8 @@ public class LeadController {
     public ResponseEntity<ApiResponse<LeadDashboardDTO>> dashboard() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
-                        new ApiResponse<>(true, service.getDashboard(), "Dashboard buscado com sucesso")
-                );
+                    new ApiResponse<>(true, service.getDashboard(), "Dashboard buscado com sucesso")
+        );
     }
 
     // 🔥 Criar Lead
@@ -86,8 +120,8 @@ public class LeadController {
         LeadResponseDTO created = service.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
-                        new ApiResponse<>(true, created, "Lead criado com sucesso")
-                );
+                    new ApiResponse<>(true, created, "Lead criado com sucesso")
+        );
     }
 
     // ✏️ Atualizar
@@ -103,14 +137,13 @@ public class LeadController {
 
     // Atualizar status
     @PatchMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<LeadResponseDTO>> updateStatus(
+    @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
+    public ResponseEntity<ApiResponse<LeadResponseDTO>> patched(
             @PathVariable UUID id,
-            @RequestBody UpdateLeadStatusDTO dto
-    ) {
-        LeadResponseDTO responseDTO = service.updateStatus(id, dto);
-
+            @RequestBody @Valid LeadStatusDTO status
+    ){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                new ApiResponse<>(true, responseDTO, "Status atualizado com sucesso")
+                new ApiResponse<>(true, service.patchLeadStatus(id, status.statusLead()), "Status atualizado com sucesso")
         );
     }
 
