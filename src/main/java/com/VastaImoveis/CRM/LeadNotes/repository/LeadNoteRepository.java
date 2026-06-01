@@ -5,6 +5,8 @@ import com.VastaImoveis.CRM.LeadNotes.Entity.domain.LeadNote;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +24,10 @@ public interface LeadNoteRepository extends JpaRepository<LeadNote, UUID> {
 
     Page<LeadNote> findByLeadId(UUID leadId, Pageable pageable);
 
+    @Query("""
+    SELECT ln.lead.id
+    FROM LeadNote ln
+    WHERE ln.lead.id IN :leadIds
+""")
+    List<UUID> findLeadIdsWithNotes(@Param("leadIds") List<UUID> leadIds);
 }

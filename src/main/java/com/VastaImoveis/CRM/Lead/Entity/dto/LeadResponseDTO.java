@@ -13,8 +13,13 @@ public class LeadResponseDTO {
     private final String telefone;
     private final String email;
     private final StatusLead status;
+    private boolean hasNotes;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+
+    public boolean isHasNotes() {
+        return hasNotes;
+    }
 
     public UUID getUserId() {
         return userId;
@@ -34,7 +39,9 @@ public class LeadResponseDTO {
     }
 
     // Getters
-
+    public void setHasNotes(boolean has) {
+        this.hasNotes = has;
+    }
     public UUID getId() {
         return id;
     }

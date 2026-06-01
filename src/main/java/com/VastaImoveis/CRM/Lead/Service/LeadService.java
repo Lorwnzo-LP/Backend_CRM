@@ -9,24 +9,23 @@ import com.VastaImoveis.CRM.Lead.Entity.dto.LeadResponseDTO;
 import com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
 import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
+import com.VastaImoveis.CRM.LeadNotes.repository.LeadNoteRepository;
 import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class LeadService {
 
     private final LeadRepository repository;
-
-    public LeadService(LeadRepository repository) {
+    private final LeadNoteRepository leadNoteRepository;
+    public LeadService(LeadRepository repository, LeadNoteRepository leadNoteRepository) {
         this.repository = repository;
+        this.leadNoteRepository = leadNoteRepository;
     }
 
     public LeadResponseDTO create(LeadRequestDTO dto) {
@@ -48,14 +47,26 @@ public class LeadService {
         User user = SecurityUtils.getCurrentUser();
 
         if (user.getRole().name().equals("GERENTE")) {
-            return repository.findAll(pageable)
-                    .map(LeadMapper::toDTO);
+            Page<Lead> page = repository.findAll(pageable);
+            List<UUID> leadIds = page.getContent()
+                    .stream().map(Lead::getId).toList();
+            Set<UUID> leadsWithNotes = new HashSet<>(leadNoteRepository.findLeadIdsWithNotes(leadIds));
+            return page.map(lead -> {
+                LeadResponseDTO dto = LeadMapper.toDTO(lead);
+                dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
+                return dto;
+            });
         }
-
-        return repository.findByUser(user, pageable)
-                .map(LeadMapper::toDTO);
-
-    }
+        Page<Lead> page = repository.findByUser(user, pageable);
+        List<UUID> leadIds = page.getContent()
+                .stream().map(Lead::getId).toList();
+        Set<UUID> leadsWithNotes = new HashSet<>(leadNoteRepository.findLeadIdsWithNotes(leadIds));
+        return page.map(lead -> {
+            LeadResponseDTO dto = LeadMapper.toDTO(lead);
+            dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
+            return dto;
+        });
+    };
 
     public Page<LeadResponseDTO> findByStatus(Pageable pageable, StatusLead status) {
         User user = SecurityUtils.getCurrentUser();
@@ -64,11 +75,27 @@ public class LeadService {
             throw new BusinessException("Você não tem acesso a essa chamada");
         }
 
-        return repository.findByStatus(status, pageable).map(LeadMapper::toDTO);
+        Page<Lead> page = repository.findByStatus(status, pageable);
+        List<UUID> leadIds = page.getContent()
+                .stream().map(Lead::getId).toList();
+        Set<UUID> leadsWithNotes = new HashSet<>(leadNoteRepository.findLeadIdsWithNotes(leadIds));
+        return page.map(lead -> {
+            LeadResponseDTO dto = LeadMapper.toDTO(lead);
+            dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
+            return dto;
+        });
     }
 
     public Page<LeadResponseDTO> findAllNotEncerrado(Pageable pageable){
-        return repository.findByStatusNot(StatusLead.ENCERRADO, pageable).map(LeadMapper::toDTO);
+        Page<Lead> page = repository.findByStatusNot(StatusLead.ENCERRADO, pageable);
+        List<UUID> leadIds = page.getContent()
+                .stream().map(Lead::getId).toList();
+        Set<UUID> leadsWithNotes = new HashSet<>(leadNoteRepository.findLeadIdsWithNotes(leadIds));
+        return page.map(lead -> {
+            LeadResponseDTO dto = LeadMapper.toDTO(lead);
+            dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
+            return dto;
+        });
     }
 
     public Page<LeadResponseDTO> findBySearch(Pageable pageable, String search){
