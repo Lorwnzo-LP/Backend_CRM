@@ -3,19 +3,26 @@ package com.VastaImoveis.CRM.Auth.dto;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserResponseDTO;
 
 public class AuthResponseDTO {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private UserResponseDTO user;
 
-    public AuthResponseDTO(UserResponseDTO user, String token) {
+    public AuthResponseDTO(UserResponseDTO user, String token, String refreshToken) {
         this.user = user;
-        this.token = token;
+        this.accessToken = token;
+        this.refreshToken = refreshToken;
     }
 
     public UserResponseDTO getUser() {
         return user;
     }
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
 }

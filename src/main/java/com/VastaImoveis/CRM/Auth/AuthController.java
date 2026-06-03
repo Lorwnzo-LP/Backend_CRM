@@ -1,5 +1,6 @@
 package com.VastaImoveis.CRM.Auth;
 
+import com.VastaImoveis.CRM.Auth.dto.AuthRefreshDto;
 import com.VastaImoveis.CRM.Auth.dto.AuthRequestDTO;
 import com.VastaImoveis.CRM.Auth.dto.AuthResponseDTO;
 import com.VastaImoveis.CRM.Auth.dto.AuthResult;
@@ -31,7 +32,7 @@ public class AuthController {
                 .body(
                         new ApiResponse<>(
                                 true,
-                                new AuthResponseDTO(userMapper.toDTO(result.user()), result.token()),
+                                new AuthResponseDTO(userMapper.toDTO(result.user()), result.accessToken(), result.refreshToken()),
                                 "Login realizado com sucesso"
                         )
                 );
@@ -49,5 +50,27 @@ public class AuthController {
                                 "Usuário autenticado"
                         )
                 );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<String>> refresh(
+            @RequestBody AuthRefreshDto dto
+    ) {
+
+        String email =
+                service.extractEmailFromRefreshToken(
+                        dto.refreshToken()
+                );
+
+        String newAccessToken =
+                service.generateNewAccessToken(email);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        newAccessToken,
+                        "Token renovado"
+                )
+        );
     }
 }

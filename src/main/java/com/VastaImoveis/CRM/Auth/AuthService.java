@@ -34,9 +34,26 @@ public class AuthService {
         System.out.println(user.getNome());
         System.out.println(user.getRole());
         String token = jwtService.generateToken(user);
+        String refreshToken = jwtService.gerenateRefreshToken(user);
+        return new AuthResult(token, refreshToken, user);
+    }
+    public String refreshToken(User user){
+        return jwtService.generateToken(user);
+    }
 
-        return new AuthResult(token, user);
+    public String extractEmailFromRefreshToken(
+            String refreshToken
+    ) {
+        return jwtService.extractEmail(refreshToken);
+    }
 
+    public String generateNewAccessToken(
+            String email
+    ) {
 
+        User user = repository.findByEmail(email)
+                .orElseThrow(InvalidCredentialsException::new);
+
+        return jwtService.generateToken(user);
     }
 }

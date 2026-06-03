@@ -22,7 +22,19 @@ public class JwtService {
                 .setSubject(user.getEmail())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+                .signWith(getSignKey())
+                .compact();
+    }
+
+    public String gerenateRefreshToken(User user){
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("type", "refresh")
+                .setIssuedAt(new Date())
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)
+                ) // 7 dias
                 .signWith(getSignKey())
                 .compact();
     }

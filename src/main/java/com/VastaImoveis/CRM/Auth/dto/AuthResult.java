@@ -2,5 +2,7 @@ package com.VastaImoveis.CRM.Auth.dto;
 
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 
-public record AuthResult(String token, User user) {
+public record AuthResult(String accessToken,
+                         String refreshToken,
+                         User user) {
 }
