@@ -97,11 +97,23 @@ public class UserService {
         return toDTO(repository.save(user));
     }
 
+    public UserResponseDTO findById(UUID id){
+        return  userMapper.toDTO(repository.findById(id).orElseThrow(() -> new BusinessException("Erro ao buscar usuário")));
+    }
 
     public Page<UserResponseDTO> findAll(Pageable pageable){
 
 
         return repository.findAll(pageable).map(userMapper::toDTO);
+    }
+
+    public void delete(UUID id){
+        try{
+            User user = repository.findById(id).orElseThrow(() -> new BusinessException("Erro ao buscar usuário"));
+            repository.delete(user);
+        } catch(BusinessException e) {
+            throw new BusinessException("Erro ao deletar usuário");
+        }
     }
 
 }

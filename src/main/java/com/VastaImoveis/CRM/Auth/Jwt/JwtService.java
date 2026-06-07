@@ -1,8 +1,11 @@
 package com.VastaImoveis.CRM.Auth.Jwt;
 
+import com.VastaImoveis.CRM.Exception.InvalidCredentialsException;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -11,10 +14,11 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final String SECRET = "sua-chave-super-secreta-muito-grande-123456789";
+    @Value("${jwt.secret}")
+    private String secret;
 
     private Key getSignKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(User user) {
@@ -26,8 +30,20 @@ public class JwtService {
                 .signWith(getSignKey())
                 .compact();
     }
+    public boolean isRefreshToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
+        return "refresh".equals(
+                claims.get("type")
+        );
+    }
     public String gerenateRefreshToken(User user){
+
+
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim("type", "refresh")

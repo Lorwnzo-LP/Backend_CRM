@@ -1,6 +1,7 @@
 package com.VastaImoveis.CRM.Auth.config;
 
 import com.VastaImoveis.CRM.Auth.Jwt.JwtFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+
+    @Value("${FRONTEND_URL}")
+    private String frontendUrl;
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -66,20 +70,32 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173" // Vite
-                // depois: domínio do seu front em produção
+                //alterar futuramente
+                frontendUrl,
+                "http://localhost:*",
+                "https://*.vercel.app"
         ));
 
         config.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS"
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE",
+                "OPTIONS"
         ));
  
         config.setAllowedHeaders(List.of("*"));
 
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                config
+        );
 
         return source;
     }

@@ -38,12 +38,18 @@ public class AuthService {
         return new AuthResult(token, refreshToken, user);
     }
     public String refreshToken(User user){
+
         return jwtService.generateToken(user);
     }
+
+
 
     public String extractEmailFromRefreshToken(
             String refreshToken
     ) {
+        if (!jwtService.isRefreshToken(refreshToken)) {
+            throw new InvalidCredentialsException();
+        }
         return jwtService.extractEmail(refreshToken);
     }
 

@@ -56,7 +56,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> refresh(
             @RequestBody AuthRefreshDto dto
     ) {
-
         String email =
                 service.extractEmailFromRefreshToken(
                         dto.refreshToken()
@@ -64,7 +63,10 @@ public class AuthController {
 
         String newAccessToken =
                 service.generateNewAccessToken(email);
-
+        System.out.println(
+                "TOKEN GERADO: "
+                        + newAccessToken.substring(0, 20)
+        );
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,

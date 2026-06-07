@@ -1,5 +1,6 @@
 package com.VastaImoveis.CRM.Users.Controller;
 
+import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import com.VastaImoveis.CRM.Users.Entity.Domain.RegiaoUsers;
 import com.VastaImoveis.CRM.Users.Entity.dto.UserRequestDTO;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -44,6 +47,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('GERENTE')")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> findById(UUID id){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                new ApiResponse<>(true, service.findById(id), "User encontrado com sucesso"));
+    }
+
+    @PreAuthorize("hasAnyRole('GERENTE')")
     @GetMapping("/{Regiao}")
     public ResponseEntity<ApiResponse<Page<UserResponseDTO>>> findByRegiao(@PathVariable("Regiao") RegiaoUsers regiaoUsers, Pageable pageable){
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -56,5 +66,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(
                         new ApiResponse<>(true, service.findAll(pageable), "Users listados com sucesso"));
+    }
+
+    @PreAuthorize("hasAnyRole('GERENTE')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable("id") UUID userId){
+        service.delete(userId);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                new ApiResponse<>(true, null, "User deletado com sucesso")
+        );
     }
 }
