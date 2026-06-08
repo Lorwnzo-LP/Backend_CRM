@@ -57,10 +57,6 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String token = authHeader.substring(7);
             String email = jwtService.extractEmail(token);
-            System.out.println(
-                    "TOKEN RECEBIDO: "
-                            + token.substring(0, 20)
-            );
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 User user = userRepository.findByEmail(email).orElse(null);
@@ -84,7 +80,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             // 🔥 importante: não quebra a request inteira
-            System.out.println("Erro no JWT: " + e.getMessage());
+
         }
 
         filterChain.doFilter(request, response);

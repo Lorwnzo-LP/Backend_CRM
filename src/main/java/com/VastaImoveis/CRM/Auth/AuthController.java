@@ -63,10 +63,6 @@ public class AuthController {
 
         String newAccessToken =
                 service.generateNewAccessToken(email);
-        System.out.println(
-                "TOKEN GERADO: "
-                        + newAccessToken.substring(0, 20)
-        );
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,
