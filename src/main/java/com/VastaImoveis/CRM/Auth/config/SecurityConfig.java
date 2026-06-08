@@ -70,7 +70,6 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                //alterar futuramente
                 frontendUrl,
                 "http://localhost:*",
                 "https://*.vercel.app"
