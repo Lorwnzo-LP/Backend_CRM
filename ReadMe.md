@@ -1,3 +1,7 @@
+## CRM para a Vasta Imoveis
+
+
+
 ## 🔐 Auth
 
 POST /auth/login
@@ -13,7 +17,7 @@ POST /auth/login
         "token": "string",
         "message": "string"
     }
-    
+
 GET /auth/me
 
     Response:
@@ -76,7 +80,7 @@ GET /users (Somente gerente)
 ## 📊 Leads
 
 GET /leads (autenticado)
-        
+
 
     response:
         "success": "boolean",
@@ -100,14 +104,15 @@ POST /leads
 
 ## 📊 LeadNotes
 POST /leadNotes
-    
+
     body:
         "note": "string"
         "leadId": "UUID",
 
 GET /leadNotes/{id}
-    
+
     response:
         "id": "UUID",
-        
-        
+
+
+(falta outras chamadas API)

@@ -25,6 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponseDTO>> login(@RequestBody AuthRequestDTO dto) {
+
         String email = dto.getEmail().toLowerCase().trim();
         AuthResult result = service.login(email, dto.getPassword());
 
