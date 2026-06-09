@@ -32,6 +32,15 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 
     Page<Lead> findByStatusNot(StatusLead statusLead, Pageable pageable);
 
+    List<Lead> findByStatusIn(
+            List<StatusLead> status
+    );
+
+    List<Lead> findByStatusInAndUserId(
+            List<StatusLead> status,
+            UUID userId
+    );
+
     Page<Lead> findByStatusNotAndUser_Id(StatusLead status, UUID userId, Pageable pageable);
     @Query("""
 

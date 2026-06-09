@@ -10,6 +10,7 @@ import com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount;
 import com.VastaImoveis.CRM.Lead.Repository.LeadRepository;
 import com.VastaImoveis.CRM.Lead.mapper.LeadMapper;
 import com.VastaImoveis.CRM.LeadNotes.repository.LeadNoteRepository;
+import com.VastaImoveis.CRM.Users.Entity.Domain.RoleUsers;
 import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
@@ -119,6 +120,34 @@ public class LeadService {
             dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
             return dto;
         });
+    }
+
+    public List<LeadResponseDTO> findOportunidades() {
+
+        User user = SecurityUtils.getCurrentUser();
+
+        List<StatusLead> statusPermitidos = List.of(
+                StatusLead.ATENDIMENTO,
+                StatusLead.AGUARDANDO,
+                StatusLead.VISITA,
+                StatusLead.NEGOCIACAO,
+                StatusLead.VENDA
+        );
+
+        List<Lead> leads;
+
+        if(user.getRole() == RoleUsers.GERENTE){
+            leads = repository.findByStatusIn(statusPermitidos);
+        } else {
+            leads = repository.findByStatusInAndUserId(
+                    statusPermitidos,
+                    user.getId()
+            );
+        }
+
+        return leads.stream()
+                .map(LeadMapper::toDTO)
+                .toList();
     }
 
     public Page<LeadResponseDTO> findBySearch(Pageable pageable, String search){

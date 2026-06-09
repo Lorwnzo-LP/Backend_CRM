@@ -122,6 +122,15 @@ public class LeadController {
         );
     }
 
+    @GetMapping("/oportunidades")
+    public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> getOportunidades() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(true, service.findOportunidades(), "Dashboard buscado com sucesso")
+                );
+    }
+
     // 🔥 Criar Lead
     @PostMapping
     @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
