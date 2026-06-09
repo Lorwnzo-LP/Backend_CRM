@@ -98,6 +98,29 @@ public class LeadService {
         });
     }
 
+    public Page<LeadResponseDTO> findAllNotEncerradoByUser(UUID userId, Pageable pageable) {
+        Page<Lead> page = repository.findByStatusNotAndUser_Id(
+                StatusLead.ENCERRADO,
+                userId,
+                pageable
+        );
+
+        List<UUID> leadIds = page.getContent()
+                .stream()
+                .map(Lead::getId)
+                .toList();
+
+        Set<UUID> leadsWithNotes = new HashSet<>(
+                leadNoteRepository.findLeadIdsWithNotes(leadIds)
+        );
+
+        return page.map(lead -> {
+            LeadResponseDTO dto = LeadMapper.toDTO(lead);
+            dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
+            return dto;
+        });
+    }
+
     public Page<LeadResponseDTO> findBySearch(Pageable pageable, String search){
         return repository.search(search, pageable).map(LeadMapper::toDTO);
     }

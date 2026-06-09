@@ -64,6 +64,16 @@ public class LeadController {
                 );
     }
 
+    @GetMapping("/status/userid/{userId}")
+    @PreAuthorize("hasAnyRole('GERENTE','CORRETOR')")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> findAllNotEncerradpByUserId(@PageableDefault(size = 10) Pageable pageable, @PathVariable UUID userId){
+        Page<LeadResponseDTO> page = service.findAllNotEncerradoByUser(userId, pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        new ApiResponse<>(true, page, "Leads listados com sucesso")
+                );
+    };
+
     @GetMapping("/all/{userId}")
     @PreAuthorize("hasAnyRole('GERENTE', 'CORRETOR')")
     public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> findAllByUserIdList(@PathVariable UUID userId){

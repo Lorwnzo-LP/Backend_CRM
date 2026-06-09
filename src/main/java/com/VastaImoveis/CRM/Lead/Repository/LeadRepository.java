@@ -32,6 +32,7 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 
     Page<Lead> findByStatusNot(StatusLead statusLead, Pageable pageable);
 
+    Page<Lead> findByStatusNotAndUser_Id(StatusLead status, UUID userId, Pageable pageable);
     @Query("""
 
                  SELECT new com.VastaImoveis.CRM.Lead.Entity.dto.StatusCount(l.status, COUNT(l))
