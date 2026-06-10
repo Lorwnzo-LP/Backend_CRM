@@ -14,6 +14,7 @@ import com.VastaImoveis.CRM.Users.Entity.Domain.RoleUsers;
 import com.VastaImoveis.CRM.shared.utils.SecurityUtils;
 import com.VastaImoveis.CRM.Users.Entity.Domain.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -120,6 +121,21 @@ public class LeadService {
             dto.setHasNotes(leadsWithNotes.contains(lead.getId()));
             return dto;
         });
+    }
+
+    public Page<LeadResponseDTO> filter(
+            String search,
+            StatusLead status,
+            int page
+    ) {
+
+        Pageable pageable = PageRequest.of(page, 10);
+
+        return repository.filter(
+                search,
+                status,
+                pageable
+        ).map(LeadMapper::toDTO);
     }
 
     public List<LeadResponseDTO> findOportunidades() {

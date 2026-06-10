@@ -1,6 +1,7 @@
 package com.VastaImoveis.CRM.Exception;
 
 
+import com.VastaImoveis.CRM.shared.utils.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,60 +18,100 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    private ResponseEntity<ErrorResponse> buildResponse(
+    private ResponseEntity<ApiResponse<Object>> buildResponse(
             HttpStatus status,
-            String error,
             String message,
-            Object details,
-            String path
+            Object data
     ) {
         return ResponseEntity.status(status)
-                .body(new ErrorResponse(status.value(), error, message, details, path));
+                .body(
+                        new ApiResponse<>(
+                                false,
+                                data,
+                                message
+                        )
+                );
     }
 
     // 🔍 404
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
-        log.error("Recurso não encontrado: {}", ex.getMessage());
-        return buildResponse(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), null, request.getRequestURI());
+    public ResponseEntity<ApiResponse<Object>> handleNotFound(
+            ResourceNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                null
+        );
     }
 
     // ⚠️ 400 - regra de negócio
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusiness(BusinessException ex, HttpServletRequest request) {
-        log.error("Credenciais inválidas: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), null, request.getRequestURI());
+    public ResponseEntity<ApiResponse<Object>> handleBusiness(
+            BusinessException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                null
+        );
     }
 
     // 🧠 VALIDAÇÃO (ESSENCIAL)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> handleValidation(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request
+    ) {
 
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors()
-                .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+                .forEach(err ->
+                        errors.put(err.getField(), err.getDefaultMessage())
+                );
 
-        log.error("Erro de validação: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, "Validation Error", "Campos inválidos", errors, request.getRequestURI());
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                "Campos inválidos",
+                errors
+        );
     }
 
     // 🔥 fallback
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> handleGeneric(
+            Exception ex,
+            HttpServletRequest request
+    ) {
         log.error("Erro interno", ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Erro interno inesperado", null, request.getRequestURI());
+
+        return buildResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Erro interno inesperado",
+                null
+        );
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> handleInvalidCredentials(InvalidCredentialsException ex, HttpServletRequest request) {
         log.error("Credenciais inválidas: {}", ex.getMessage());
-        return buildResponse(HttpStatus.UNAUTHORIZED, "Unathorized", ex.getMessage(), null, request.getRequestURI());
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                "Credenciais Inválidas",
+                null
+        );
     }
 
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> handleAccessDenied(Exception ex, HttpServletRequest request) {
         log.error("Acesso negado: {}", ex.getMessage());
-        return buildResponse(HttpStatus.FORBIDDEN, "Forbidden", "Acesso negado", null, request.getRequestURI());
+        return buildResponse(
+                HttpStatus.FORBIDDEN,
+                "Acesso negado",
+                null
+        );
     }
 }

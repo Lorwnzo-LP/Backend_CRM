@@ -75,6 +75,23 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
             Pageable pageable
     );
 
+    @Query("""
+SELECT l
+FROM Lead l
+WHERE
+(:search IS NULL OR
+ LOWER(l.nome) LIKE LOWER(CONCAT('%', :search, '%'))
+ OR LOWER(l.email) LIKE LOWER(CONCAT('%', :search, '%'))
+ OR l.telefone LIKE CONCAT('%', :search, '%'))
+AND
+(:status IS NULL OR l.status = :status)
+""")
+    Page<Lead> filter(
+            @Param("search") String search,
+            @Param("status") StatusLead status,
+            Pageable pageable
+    );
+
     /*
     Leads por periodo:
         WHERE (:user IS NULL OR l.user = :user)

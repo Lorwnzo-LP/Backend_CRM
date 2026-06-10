@@ -122,6 +122,22 @@ public class LeadController {
         );
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> filter(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) StatusLead status,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        service.filter(search, status, page),
+                        "Leads encontrados"
+                )
+        );
+    }
+
     @GetMapping("/oportunidades")
     public ResponseEntity<ApiResponse<List<LeadResponseDTO>>> getOportunidades() {
 
