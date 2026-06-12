@@ -126,16 +126,13 @@ public class LeadService {
     public Page<LeadResponseDTO> filter(
             String search,
             StatusLead status,
-            int page
+            UUID userId,
+            Pageable pageable
     ) {
 
-        Pageable pageable = PageRequest.of(page, 10);
-
-        return repository.filter(
-                search,
-                status,
-                pageable
-        ).map(LeadMapper::toDTO);
+        return repository
+                .filter(search, status, userId, pageable)
+                .map(LeadMapper::toDTO);
     }
 
     public List<LeadResponseDTO> findOportunidades() {

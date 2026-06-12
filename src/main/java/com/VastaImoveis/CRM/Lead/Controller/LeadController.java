@@ -126,13 +126,19 @@ public class LeadController {
     public ResponseEntity<ApiResponse<Page<LeadResponseDTO>>> filter(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) StatusLead status,
-            @RequestParam(defaultValue = "0") int page
+            @RequestParam(required = false) UUID userId,
+            Pageable pageable
     ) {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,
-                        service.filter(search, status, page),
+                        service.filter(
+                                search,
+                                status,
+                                userId,
+                                pageable
+                        ),
                         "Leads encontrados"
                 )
         );

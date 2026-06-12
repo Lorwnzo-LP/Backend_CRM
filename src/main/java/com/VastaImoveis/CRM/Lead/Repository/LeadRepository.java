@@ -79,16 +79,27 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 SELECT l
 FROM Lead l
 WHERE
-(:search IS NULL OR
- LOWER(l.nome) LIKE LOWER(CONCAT('%', :search, '%'))
- OR LOWER(l.email) LIKE LOWER(CONCAT('%', :search, '%'))
- OR l.telefone LIKE CONCAT('%', :search, '%'))
+(
+    COALESCE(:search, '') = ''
+    OR LOWER(l.nome) LIKE CONCAT('%', LOWER(:search), '%')
+    OR LOWER(l.email) LIKE CONCAT('%', LOWER(:search), '%')
+    OR l.telefone LIKE CONCAT('%', :search, '%')
+)
 AND
-(:status IS NULL OR l.status = :status)
+(
+    :status IS NULL
+    OR l.status = :status
+)
+AND
+(
+    :userId IS NULL
+    OR l.user.id = :userId
+)
 """)
     Page<Lead> filter(
             @Param("search") String search,
             @Param("status") StatusLead status,
+            @Param("userId") UUID userId,
             Pageable pageable
     );
 
