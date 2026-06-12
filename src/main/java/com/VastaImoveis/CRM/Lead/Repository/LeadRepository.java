@@ -87,7 +87,7 @@ WHERE
 )
 AND
 (
-    :status IS NULL
+    (:status IS NULL AND l.status <> com.VastaImoveis.CRM.Lead.Entity.Domain.StatusLead.ENCERRADO)
     OR l.status = :status
 )
 AND
@@ -95,6 +95,7 @@ AND
     :userId IS NULL
     OR l.user.id = :userId
 )
+ORDER BY l.createdAt DESC
 """)
     Page<Lead> filter(
             @Param("search") String search,
