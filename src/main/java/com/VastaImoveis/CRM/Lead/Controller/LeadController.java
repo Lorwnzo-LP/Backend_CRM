@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,9 +129,10 @@ public class LeadController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) StatusLead status,
             @RequestParam(required = false) UUID userId,
-            Pageable pageable
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            @PageableDefault(size=15) Pageable pageable
     ) {
-
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,
@@ -137,6 +140,8 @@ public class LeadController {
                                 search,
                                 status,
                                 userId,
+                                startDate,
+                                endDate,
                                 pageable
                         ),
                         "Leads encontrados"

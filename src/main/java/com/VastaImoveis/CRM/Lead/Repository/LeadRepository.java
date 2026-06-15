@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,12 +95,20 @@ AND
     :userId IS NULL
     OR l.user.id = :userId
 )
+AND (
+    l.createdAt >= :startDate
+)
+AND (
+     l.createdAt < :endDate
+)
 ORDER BY l.createdAt DESC
 """)
     Page<Lead> filter(
             @Param("search") String search,
             @Param("status") StatusLead status,
             @Param("userId") UUID userId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
             Pageable pageable
     );
 

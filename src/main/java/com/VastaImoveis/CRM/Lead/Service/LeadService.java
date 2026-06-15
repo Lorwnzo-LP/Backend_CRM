@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -127,11 +129,21 @@ public class LeadService {
             String search,
             StatusLead status,
             UUID userId,
+            LocalDate startDate,
+            LocalDate endDate,
             Pageable pageable
     ) {
+        LocalDateTime start =
+                startDate != null
+                        ? startDate.atStartOfDay()
+                        : LocalDateTime.of(1900,1,1,0,0);
 
+        LocalDateTime end =
+                endDate != null
+                        ? endDate.plusDays(1).atStartOfDay()
+                        : LocalDateTime.of(2999,12,31,23,59);
         return repository
-                .filter(search, status, userId, pageable)
+                .filter(search, status, userId, start, end, pageable)
                 .map(LeadMapper::toDTO);
     }
 
