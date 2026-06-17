@@ -142,9 +142,25 @@ public class LeadService {
                 endDate != null
                         ? endDate.plusDays(1).atStartOfDay()
                         : LocalDateTime.of(2999,12,31,23,59);
-        return repository
-                .filter(search, status, userId, start, end, pageable)
-                .map(LeadMapper::toDTO);
+
+
+        Page<Lead> page = repository
+                .filter(search, status, userId, start, end, pageable);
+        List<UUID> listIds = page.getContent()
+                .stream()
+                .map(Lead::getId)
+                .toList();
+        Set<UUID> leadsWithNotes =
+                new HashSet<>(leadNoteRepository.findLeadIdsWithNotes(listIds));
+
+        return page.map(lead -> {
+                    LeadResponseDTO dto = LeadMapper.toDTO(lead);
+                    dto.setHasNotes(
+                            leadsWithNotes.contains(lead.getId())
+                    );
+                    return dto;
+        }
+        );
     }
 
     public List<LeadResponseDTO> findOportunidades() {
