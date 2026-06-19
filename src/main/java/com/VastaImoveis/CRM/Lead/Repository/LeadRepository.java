@@ -28,6 +28,8 @@ public interface LeadRepository extends JpaRepository<Lead, UUID> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByTelefone(String telefone);
+
     Page<Lead> findByStatus(StatusLead statusLead, Pageable pageable);
 
     Page<Lead> findByStatusNot(StatusLead statusLead, Pageable pageable);

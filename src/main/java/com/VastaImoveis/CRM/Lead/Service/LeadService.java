@@ -231,12 +231,17 @@ public class LeadService {
             throw new BusinessException("Você não pode editar este Lead");
         }
 
-        // 🔥 Regra: evitar duplicidade de email
-        if (!lead.getEmail().equals(dto.getEmail()) &&
-                repository.existsByEmail(dto.getEmail())) {
-            throw new BusinessException("Email já cadastrado");
+        if(lead.getEmail() != null) {
+            // 🔥 Regra: evitar duplicidade de email
+            if (!lead.getEmail().equals(dto.getEmail()) &&
+                    repository.existsByEmail(dto.getEmail())) {
+                throw new BusinessException("Email já cadastrado");
+            }
         }
-
+        if (!lead.getTelefone().equals(dto.getTelefone()) &&
+                repository.existsByTelefone(dto.getTelefone())) {
+            throw new BusinessException("Telefone já cadastrado");
+        }
         Lead updated = repository.save(LeadMapper.updateEntity(lead, dto));
 
         return LeadMapper.toDTO(updated);
